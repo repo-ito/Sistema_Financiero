@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - Razones Financieras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --dark: #1e1e2c;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 40px rgba(67, 97, 238, 0.15);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #f8fafc;
+        }
+        
+        /* Navigation */
+        .navbar {
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary) !important;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary) !important;
+        }
+        
+        /* Hero Section */
+        .doc-hero {
+            background: var(--gradient);
+            color: white;
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .doc-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
+        }
+        
+        /* Sidebar Navigation */
+        .doc-sidebar {
+            position: sticky;
+            top: 100px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .doc-nav-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .doc-nav-item:hover, .doc-nav-item.active {
+            background: rgba(67, 97, 238, 0.1);
+            border-left: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Content Sections */
+        .doc-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .doc-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+        
+        /* Cards */
+        .concept-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .concept-card-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            border-bottom: none;
+        }
+        
+        .ratio-card {
+            border-left: 4px solid var(--primary);
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .ratio-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .ratio-icon {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        /* Tables */
+        .ratio-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .ratio-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .ratio-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ratio-table tr:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        /* Interactive Elements */
+        .importance-badge {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .formula-box {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            margin-top: 50px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .doc-hero {
+                padding: 60px 0 40px;
+            }
+            
+            .doc-section {
+                padding: 25px;
+            }
+            
+            .doc-sidebar {
+                margin-bottom: 20px;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-chart-line me-2"></i>FinAnalyzer
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i> Inicio</a>
+                    <a class="nav-link" href="ranking.html"><i class="fas fa-chart-bar me-1"></i> Análisis Comparativo</a>
+                    <a class="nav-link active" href="documentacion.html"><i class="fas fa-book me-1"></i> Documentación</a>
+                    <a class="nav-link" href="#"><i class="fas fa-envelope me-1"></i> Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="doc-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 mb-4 fw-bold">Documentación - Razones Financieras</h1>
+                    <p class="lead mb-0">Comprende los fundamentos del análisis financiero y cómo interpretar los indicadores clave</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Content -->
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3">
+                <div class="doc-sidebar">
+                    <h5 class="mb-4">Contenido</h5>
+                    <div class="doc-nav-item active" onclick="scrollToSection('introduccion')">
+                        <i class="fas fa-play-circle me-2"></i>Introducción
+                    </div>
+                    <div class="doc-nav-item" onclick="scrollToSection('importancia')">
+                        <i class="fas fa-star me-2"></i>Importancia
+                    </div>
+                    <div class="doc-nav-item" onclick="scrollToSection('clasificacion')">
+                        <i class="fas fa-layer-group me-2"></i>Clasificación
+                    </div>
+                    <div class="doc-nav-item" onclick="scrollToSection('ratios')">
+                        <i class="fas fa-calculator me-2"></i>Ratios Calculados
+                    </div>
+                    <div class="doc-nav-item" onclick="scrollToSection('interpretacion')">
+                        <i class="fas fa-chart-line me-2"></i>Interpretación
+                    </div>
+                    <div class="doc-nav-item" onclick="scrollToSection('aplicacion')">
+                        <i class="fas fa-rocket me-2"></i>Aplicación Práctica
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Introducción Section -->
+                <section id="introduccion" class="doc-section">
+                    <h2 class="section-title">¿Qué son las Razones Financieras?</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <div class="concept-card-header">
+                                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Definición</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Las razones financieras, también conocidas como ratios financieros, son herramientas de análisis que relacionan diferentes partidas de los estados financieros para obtener información significativa sobre el desempeño y la situación financiera de una empresa.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <div class="concept-card-header">
+                                    <h5 class="mb-0"><i class="fas fa-bullseye me-2"></i>Objetivo Principal</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Permiten evaluar la rentabilidad, liquidez, solvencia y eficiencia operativa de una organización, facilitando la toma de decisiones estratégicas basadas en datos cuantitativos.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="formula-box">
+                        <strong>Fórmula General:</strong> Ratio = (Partida del Estado Financiero A) / (Partida del Estado Financiero B)
+                    </div>
+                </section>
+
+                <!-- Importancia Section -->
+                <section id="importancia" class="doc-section">
+                    <h2 class="section-title">Importancia del Análisis de Razones Financieras</h2>
+                    <div class="importance-badge">
+                        <i class="fas fa-exclamation-circle me-2"></i>Valor Estratégico
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="ratio-card text-center">
+                                <div class="ratio-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h5>Evaluación del Desempeño</h5>
+                                <p class="text-muted">Permiten medir la eficiencia operativa y la rentabilidad de la empresa en el tiempo.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="ratio-card text-center">
+                                <div class="ratio-icon">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                                <h5>Análisis Comparativo</h5>
+                                <p class="text-muted">Facilitan la comparación con empresas del mismo sector o con estándares de la industria.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="ratio-card text-center">
+                                <div class="ratio-icon">
+                                    <i class="fas fa-search-dollar"></i>
+                                </div>
+                                <h5>Detección de Problemas</h5>
+                                <p class="text-muted">Ayudan a identificar áreas problemáticas antes de que se conviertan en crisis.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-primary mt-4">
+                        <h6><i class="fas fa-info-circle me-2"></i>¿Por qué son importantes?</h6>
+                        <p class="mb-0">Las razones financieras transforman datos contables complejos en indicadores simples y comprensibles que permiten a inversionistas, acreedores y gerentes tomar decisiones informadas sobre la salud financiera de una empresa.</p>
+                    </div>
+                </section>
+
+                <!-- Clasificación Section -->
+                <section id="clasificacion" class="doc-section">
+                    <h2 class="section-title">Clasificación de las Razones Financieras</h2>
+                    
+                    <table class="ratio-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Ratio</th>
+                                <th>Propósito</th>
+                                <th>Ejemplos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Liquidez</strong></td>
+                                <td>Capacidad de pagar obligaciones a corto plazo</td>
+                                <td>Razón Corriente, Prueba del Ácido</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Solvencia</strong></td>
+                                <td>Capacidad de pagar deudas a largo plazo</td>
+                                <td>Razón de Endeudamiento, Cobertura de Intereses</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Rentabilidad</strong></td>
+                                <td>Capacidad de generar utilidades</td>
+                                <td>Margen Neto, ROA, ROE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Eficiencia</strong></td>
+                                <td>Uso eficiente de los activos</td>
+                                <td>Rotación de Inventarios, Período de Cobranza</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mercado</strong></td>
+                                <td>Valoración de la empresa en el mercado</td>
+                                <td>P/E Ratio, Valor Libro</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Ratios Calculados Section -->
+                <section id="ratios" class="doc-section">
+                    <h2 class="section-title">Ratios Calculados en el Sistema</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <h5 class="mb-0">Razón Rápida</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> (Activo Corriente - Inventarios) / Pasivo Corriente</p>
+                                <p><strong>Interpretación:</strong> Mide la capacidad de pago inmediata sin depender de la venta de inventarios.</p>
+                            </div>
+                            
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-flask"></i>
+                                    </div>
+                                    <h5 class="mb-0">Prueba del Ácido</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> Similar a Razón Rápida, excluye inventarios por ser menos líquidos.</p>
+                                <p><strong>Interpretación:</strong> Evalúa la capacidad de pagar deudas a corto plazo con activos más líquidos.</p>
+                            </div>
+                            
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-landmark"></i>
+                                    </div>
+                                    <h5 class="mb-0">Razón de Deuda Total</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> Pasivo Total / Activo Total</p>
+                                <p><strong>Interpretación:</strong> Indica el porcentaje de activos financiado con deuda.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <h5 class="mb-0">Rotación del Interés Ganado</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> Utilidad Operativa / Gastos por Intereses</p>
+                                <p><strong>Interpretación:</strong> Mide la capacidad de cubrir gastos financieros con las utilidades.</p>
+                            </div>
+                            
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                    <h5 class="mb-0">Rotación del Inventario</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> Costo de Ventas / Inventario Promedio</p>
+                                <p><strong>Interpretación:</strong> Evalúa la eficiencia en la gestión de inventarios.</p>
+                            </div>
+                            
+                            <div class="ratio-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="ratio-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <h5 class="mb-0">Rendimiento sobre Capital</h5>
+                                </div>
+                                <p><strong>Fórmula:</strong> Utilidad Neta / Patrimonio</p>
+                                <p><strong>Interpretación:</strong> Mide la rentabilidad generada para los accionistas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interpretación Section -->
+                <section id="interpretacion" class="doc-section">
+                    <h2 class="section-title">Interpretación de Resultados</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <div class="concept-card-header">
+                                    <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Valores Óptimos</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li><strong>Razón Rápida:</strong> > 1.0 (Depende del sector)</li>
+                                        <li><strong>Razón de Deuda:</strong> < 60% (Varía por industria)</li>
+                                        <li><strong>Margen de Utilidad:</strong> Comparar con promedio del sector</li>
+                                        <li><strong>ROE:</strong> > Costo de oportunidad del inversionista</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="concept-card">
+                                <div class="concept-card-header">
+                                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Señales de Alerta</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Razones de liquidez en declive constante</li>
+                                        <li>Alto nivel de endeudamiento con baja rentabilidad</li>
+                                        <li>Rotaciones menores a los promedios del sector</li>
+                                        <li>Deterioro en márgenes de utilidad</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-4">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Consejo de Análisis</h6>
+                        <p class="mb-0">Ningún ratio debe analizarse de forma aislada. Es crucial considerar la tendencia histórica, comparar con empresas del mismo sector y analizar el contexto económico general para una interpretación adecuada.</p>
+                    </div>
+                </section>
+
+                <!-- Aplicación Práctica Section -->
+                <section id="aplicacion" class="doc-section">
+                    <h2 class="section-title">Aplicación Práctica</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-8 mx-auto">
+                            <div class="concept-card">
+                                <div class="concept-card-header text-center">
+                                    <h4 class="mb-0"><i class="fas fa-rocket me-2"></i>¿Para Qué Sirven en la Práctica?</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-user-tie fa-2x text-primary mb-3"></i>
+                                            <h6>Para Inversionistas</h6>
+                                            <p class="small">Evaluar oportunidades de inversión y riesgo</p>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-handshake fa-2x text-success mb-3"></i>
+                                            <h6>Para Acreedores</h6>
+                                            <p class="small">Analizar capacidad de pago y riesgo crediticio</p>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <i class="fas fa-chart-line fa-2x text-warning mb-3"></i>
+                                            <h6>Para Gerentes</h6>
+                                            <p class="small">Tomar decisiones operativas y estratégicas</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <a href="ranking.html" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-play-circle me-2"></i>Comenzar Análisis Práctico
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 Christopher Alexander Mena Garcia - Universidad Nacional de Ingeniería UNI</p>
+            <p class="mb-0">Sistema de Análisis Financiero Comparativo</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for navigation
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            const offset = 100;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+
+            // Update active nav item
+            document.querySelectorAll('.doc-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        // Update active nav on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.doc-section');
+            const navItems = document.querySelectorAll('.doc-nav-item');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (window.pageYOffset >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(currentSection)) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize first section as active
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.doc-nav-item').classList.add('active');
+        });
+    </script>
+</body>
+</html>
