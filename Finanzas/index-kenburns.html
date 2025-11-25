@@ -97,9 +97,6 @@
         #userMenuLi.active .user-avatar-btn::after,
         .user-avatar-btn::after {
             display: none !important;
-            content: none !important;
-            height: 0 !important;
-            width: 0 !important;
         }
 
         .avatar-text {
@@ -127,16 +124,16 @@
             /* Oculto por defecto */
             transform: scale(1, 0) !important;
             transform-origin: top !important;
-            opacity: 0;
-            visibility: hidden;
+            opacity: 0 !important;
+            visibility: hidden !important;
             transition: transform 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s !important;
         }
 
         /* Mostrar menú cuando el padre tiene clase 'open' */
         #userMenuLi.open .dropdown-menu-user {
             transform: scale(1, 1) !important;
-            opacity: 1;
-            visibility: visible;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         /* Cabecera del usuario dentro del menú */
@@ -1139,22 +1136,13 @@
         </ul>
         `;
 
-                // 2. Lógica Manual para Abrir/Cerrar
+                // 2. Agregar toggle al botón
                 const btnBolita = document.getElementById('btnBolitaUsuario');
-                const liPadre = document.getElementById('userMenuLi');
-
-                if (btnBolita && liPadre) {
+                if (btnBolita) {
                     btnBolita.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        liPadre.classList.toggle('open');
-                    });
-
-                    // 3. Cerrar al hacer click fuera
-                    document.addEventListener('click', (e) => {
-                        if (liPadre.classList.contains('open') && !liPadre.contains(e.target)) {
-                            liPadre.classList.remove('open');
-                        }
+                        document.getElementById('userMenuLi').classList.toggle('open');
                     });
                 }
 
@@ -1178,21 +1166,13 @@
         </ul>
         `;
 
-                // Lógica de toggle para espectador
+                // Agregar toggle al botón de espectador
                 const btnEspectador = document.getElementById('btnBolitaEspectador');
-                const liPadre = document.getElementById('userMenuLi');
-
-                if (btnEspectador && liPadre) {
+                if (btnEspectador) {
                     btnEspectador.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        liPadre.classList.toggle('open');
-                    });
-
-                    document.addEventListener('click', (e) => {
-                        if (liPadre.classList.contains('open') && !liPadre.contains(e.target)) {
-                            liPadre.classList.remove('open');
-                        }
+                        document.getElementById('userMenuLi').classList.toggle('open');
                     });
                 }
 
@@ -1204,6 +1184,14 @@
         </a>
         `;
             }
+
+            // Event listener global para cerrar menú al hacer click fuera (solo se agrega una vez)
+            document.addEventListener('click', (e) => {
+                const userMenuLi = document.getElementById('userMenuLi');
+                if (userMenuLi && userMenuLi.classList.contains('open') && !userMenuLi.contains(e.target)) {
+                    userMenuLi.classList.remove('open');
+                }
+            });
         });
 
         // 3. FUNCIÓN DE SALIDA
