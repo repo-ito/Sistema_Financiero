@@ -24,6 +24,125 @@
     <!-- Template JS Files -->
     <script src="js/modernizr.js"></script>
 
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* --- ESTILOS DEL PERFIL DE USUARIO (BOLITA) --- */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #3498db;
+        }
+
+        .user-avatar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            margin-top: 15px;
+            /* Ajuste para alinear en navbar */
+            margin-left: 10px;
+        }
+
+        .user-avatar-btn:hover {
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .avatar-text {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        /* Menú Desplegable */
+        .dropdown-menu-user {
+            width: auto;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            min-width: 240px;
+            margin-top: 10px;
+        }
+
+        /* Cabecera del usuario dentro del menú */
+        .user-info-header {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-role-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .user-email-text {
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 500;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Items del menú */
+        .dropdown-menu-user>li>a {
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+
+        .dropdown-menu-user>li>a:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--accent);
+        }
+
+        .dropdown-menu-user>li>a.logout:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        /* Animación */
+        .animate {
+            animation-duration: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .slideIn {
+            animation-name: slideIn;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body class="double-diagonal">
@@ -86,6 +205,17 @@
                             <li class="search hidden-xs hidden-sm"><button id="search-button"
                                     class="fa fa-search"></button></li>
                             <!-- Search Icon Ends -->
+                            <!-- User Menu Starts -->
+                            <li class="dropdown" id="userMenuLi">
+                                <div id="userMenuContainer">
+                                    <!-- Content injected by JS -->
+                                    <a href="Login/login.html" class="btn btn-primary"
+                                        style="margin-top: 20px; margin-left: 10px; border-radius: 20px;">
+                                        <i class="fa fa-user"></i> Acceder
+                                    </a>
+                                </div>
+                            </li>
+                            <!-- User Menu Ends -->
                         </ul>
                         <!-- Main Menu Ends -->
                     </div>
@@ -894,6 +1024,80 @@
     <!-- Main JS Initialization File -->
     <script src="js/custom.js"></script>
 
+    <script>
+        // 1. CONFIGURACIÓN (Pega tus claves aquí)
+        const supabaseUrl = 'https://tggsqzdjfyfpxduinaio.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZ3NxemRqZnlmcHhkdWluYWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMTIzMTYsImV4cCI6MjA3OTU4ODMxNn0.32UELAO2dC2merWnv0VgKVzE8SJy0wI-cp9X2JljnCw';
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. CONTROLADOR DEL NAVBAR
+        document.addEventListener('DOMContentLoaded', async () => {
+            const menuContainer = document.getElementById('userMenuContainer');
+
+            // A. Verificar Sesión Real
+            const { data: { session } } = await client.auth.getSession();
+
+            // B. Verificar Modo Espectador
+            const esEspectador = localStorage.getItem('modo_espectador') === 'true';
+
+            if (session) {
+                // CASO 1: USUARIO LOGUEADO (EMPRESA)
+                const email = session.user.email;
+                const inicial = email.charAt(0).toUpperCase();
+
+                menuContainer.innerHTML = `
+                <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar-text">${inicial}</div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user animate slideIn">
+                    <li>
+                        <div class="user-info-header">
+                            <span class="user-role-badge"><i class="fa fa-building"></i> Empresa</span>
+                            <div class="user-email-text">${email}</div>
+                        </div>
+                    </li>
+                    <li><a href="ranking.html"><i class="fa fa-pie-chart"></i> Ir al Dashboard</a></li>
+                    <li><a href="#"><i class="fa fa-cog"></i> Configuración</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a class="logout text-danger" href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
+                </ul>
+            `;
+            } else if (esEspectador) {
+                // CASO 2: ESPECTADOR (INVITADO)
+                menuContainer.innerHTML = `
+                <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" style="border-color: #999;" aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user">
+                    <li>
+                        <div class="user-info-header">
+                            <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
+                            <div class="user-email-text">Visualización Limitada</div>
+                        </div>
+                    </li>
+                    <li><a href="ranking.html"><i class="fa fa-eye"></i> Ver Ranking</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a class="text-primary" href="Login/login.html" style="font-weight:bold;"><i class="fa fa-star"></i> Crear Cuenta</a></li>
+                    <li><a class="logout" href="#" onclick="logout()"><i class="fa fa-times"></i> Salir</a></li>
+                </ul>
+            `;
+            } else {
+                // CASO 3: VISITANTE (NO LOGUEADO)
+                menuContainer.innerHTML = `
+                <a href="Login/login.html" class="btn btn-primary" style="border-radius: 20px; font-weight: bold; padding: 8px 20px; margin-top: 20px; margin-left: 10px;">
+                    <i class="fa fa-user"></i> Acceder
+                </a>
+            `;
+            }
+        });
+
+        // 3. FUNCIÓN DE SALIDA
+        async function logout() {
+            await client.auth.signOut();
+            localStorage.removeItem('modo_espectador');
+            window.location.reload(); // Recargar para mostrar botón de acceder
+        }
+    </script>
 </body>
 
 
