@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Usamos supabaseClient
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
-            window.location.href = '../ranking.html';
+            window.location.href = '../index-kenburns.html';
         }
     }
 

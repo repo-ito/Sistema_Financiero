@@ -208,11 +208,6 @@
                             <!-- User Menu Starts -->
                             <li class="dropdown" id="userMenuLi">
                                 <div id="userMenuContainer">
-                                    <!-- Content injected by JS -->
-                                    <a href="Login/login.html" class="btn btn-primary"
-                                        style="margin-top: 20px; margin-left: 10px; border-radius: 20px;">
-                                        <i class="fa fa-user"></i> Acceder
-                                    </a>
                                 </div>
                             </li>
                             <!-- User Menu Ends -->
@@ -1041,53 +1036,84 @@
             const esEspectador = localStorage.getItem('modo_espectador') === 'true';
 
             if (session) {
-                // CASO 1: USUARIO LOGUEADO (EMPRESA)
+                // --- CASO 1: USUARIO LOGUEADO ---
                 const email = session.user.email;
                 const inicial = email.charAt(0).toUpperCase();
 
+                // 1. Inyectamos el HTML
                 menuContainer.innerHTML = `
-                <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <div class="avatar-text">${inicial}</div>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user animate slideIn">
-                    <li>
-                        <div class="user-info-header">
-                            <span class="user-role-badge"><i class="fa fa-building"></i> Empresa</span>
-                            <div class="user-email-text">${email}</div>
-                        </div>
-                    </li>
-                    <li><a href="ranking.html"><i class="fa fa-pie-chart"></i> Ir al Dashboard</a></li>
-                    <li><a href="#"><i class="fa fa-cog"></i> Configuración</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a class="logout text-danger" href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
-                </ul>
-            `;
+        <a href="#" id="btnBolitaUsuario" class="user-avatar-btn" style="margin-left: 10px;">
+            <div class="avatar-text">${inicial}</div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user animate slideIn" id="menuDesplegableUsuario">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge"><i class="fa fa-user-circle"></i> Usuario</span>
+                    <div class="user-email-text">${email}</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-trophy"></i> Ranking</a></li>
+            <li><a href="documentacion.html"><i class="fa fa-book"></i> Documentación</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="logout text-danger" href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
+        </ul>
+        `;
+
+                // 2. Lógica Manual para Abrir/Cerrar
+                const btnBolita = document.getElementById('btnBolitaUsuario');
+                const liPadre = document.getElementById('userMenuLi'); // Asegúrate que tu LI en el HTML tenga este ID
+
+                if (btnBolita && liPadre) {
+                    btnBolita.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (liPadre.classList.contains('open')) {
+                            liPadre.classList.remove('open');
+                        } else {
+                            // Cierra otros menús si los hubiera
+                            document.querySelectorAll('.dropdown.open').forEach(el => el.classList.remove('open'));
+                            liPadre.classList.add('open');
+                        }
+                    });
+
+                    // 3. Cerrar al hacer click fuera
+                    document.addEventListener('click', (e) => {
+                        if (liPadre.classList.contains('open')) {
+                            if (!liPadre.contains(e.target)) {
+                                liPadre.classList.remove('open');
+                            }
+                        }
+                    });
+                }
+
             } else if (esEspectador) {
-                // CASO 2: ESPECTADOR (INVITADO)
+                // --- CASO 2: ESPECTADOR ---
                 menuContainer.innerHTML = `
-                <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" style="border-color: #999;" aria-haspopup="true" aria-expanded="false">
-                    <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user">
-                    <li>
-                        <div class="user-info-header">
-                            <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
-                            <div class="user-email-text">Visualización Limitada</div>
-                        </div>
-                    </li>
-                    <li><a href="ranking.html"><i class="fa fa-eye"></i> Ver Ranking</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a class="text-primary" href="Login/login.html" style="font-weight:bold;"><i class="fa fa-star"></i> Crear Cuenta</a></li>
-                    <li><a class="logout" href="#" onclick="logout()"><i class="fa fa-times"></i> Salir</a></li>
-                </ul>
-            `;
+        <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" style="border-color: #999;" aria-haspopup="true" aria-expanded="false">
+            <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
+                    <div class="user-email-text">Visualización Limitada</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-eye"></i> Ver Ranking</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="text-primary" href="Login/login.html" style="font-weight:bold;"><i class="fa fa-star"></i> Crear Cuenta</a></li>
+            <li><a class="logout" href="#" onclick="logout()"><i class="fa fa-times"></i> Salir</a></li>
+        </ul>
+        `;
+
             } else {
-                // CASO 3: VISITANTE (NO LOGUEADO)
+                // --- CASO 3: VISITANTE ---
                 menuContainer.innerHTML = `
-                <a href="Login/login.html" class="btn btn-primary" style="border-radius: 20px; font-weight: bold; padding: 8px 20px; margin-top: 20px; margin-left: 10px;">
-                    <i class="fa fa-user"></i> Acceder
-                </a>
-            `;
+        <a href="Login/login.html" class="btn btn-primary" style="border-radius: 20px; font-weight: bold; padding: 8px 20px; margin-top: 20px; margin-left: 10px;">
+            <i class="fa fa-user"></i> Acceder
+        </a>
+        `;
             }
         });
 
