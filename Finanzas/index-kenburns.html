@@ -35,26 +35,68 @@
             --accent: #3498db;
         }
 
-        .user-avatar-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            background: white;
+        /* Container del menú de usuario - previene herencia de estilos del navbar */
+        #userMenuLi {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 0 !important;
+            position: relative !important;
+            vertical-align: middle !important;
+            height: auto !important;
+        }
+
+        /* Evitar que el li herede estilos de hover del navbar */
+        #userMenuLi:hover,
+        #userMenuLi.active,
+        #userMenuLi:hover::after,
+        #userMenuLi.active::after,
+        #userMenuLi > a::after {
+            background: none !important;
+            content: none !important;
+        }
+
+        #userMenuContainer {
             display: flex;
             align-items: center;
-            justify-content: center;
+            position: relative;
+            height: 100%;
+        }
+
+        /* Botón Avatar - dimensiones fijas para evitar estiramiento */
+        .user-avatar-btn {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            max-width: 40px !important;
+            max-height: 40px !important;
+            border-radius: 50% !important;
+            border: 2px solid var(--accent) !important;
+            background: white !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            margin-top: 15px;
-            /* Ajuste para alinear en navbar */
-            margin-left: 10px;
+            transition: box-shadow 0.3s, border-color 0.3s !important;
+            text-decoration: none !important;
+            margin: 0 10px !important;
+            padding: 0 !important;
+            flex-shrink: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            line-height: 1 !important;
         }
 
         .user-avatar-btn:hover {
             box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
-            transform: translateY(-2px);
+            text-decoration: none !important;
+        }
+
+        /* Evitar que el hover agregue línea debajo */
+        #userMenuLi:hover .user-avatar-btn::after,
+        #userMenuLi.active .user-avatar-btn::after,
+        .user-avatar-btn::after {
+            display: none !important;
         }
 
         .avatar-text {
@@ -64,15 +106,34 @@
             line-height: 1;
         }
 
-        /* Menú Desplegable */
+        /* Menú Desplegable - estilos que sobrescriben el template */
         .dropdown-menu-user {
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
             width: auto;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            padding: 10px;
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            padding: 10px !important;
             min-width: 240px;
-            margin-top: 10px;
+            margin-top: 10px !important;
+            background: #fff !important;
+            z-index: 1000 !important;
+            /* Oculto por defecto */
+            transform: scale(1, 0) !important;
+            transform-origin: top !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s !important;
+        }
+
+        /* Mostrar menú cuando el padre tiene clase 'open' */
+        #userMenuLi.open .dropdown-menu-user {
+            transform: scale(1, 1) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         /* Cabecera del usuario dentro del menú */
@@ -104,21 +165,37 @@
         }
 
         /* Items del menú */
+        .dropdown-menu-user>li {
+            list-style: none !important;
+        }
+
         .dropdown-menu-user>li>a {
             border-radius: 6px;
-            padding: 8px 15px;
+            padding: 8px 15px !important;
             font-size: 0.95rem;
-            color: #2c3e50;
+            color: #2c3e50 !important;
+            display: block;
+            text-decoration: none;
+            text-transform: none !important;
         }
 
         .dropdown-menu-user>li>a:hover {
-            background: rgba(52, 152, 219, 0.1);
-            color: var(--accent);
+            background: rgba(52, 152, 219, 0.1) !important;
+            color: var(--accent) !important;
         }
 
         .dropdown-menu-user>li>a.logout:hover {
-            background: rgba(231, 76, 60, 0.1);
-            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1) !important;
+            color: #e74c3c !important;
+        }
+
+        /* Botón de acceder para visitantes */
+        #userMenuContainer .btn-primary {
+            margin: 0 10px !important;
+            padding: 8px 20px !important;
+            border-radius: 20px !important;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
         /* Animación */
@@ -1032,10 +1109,10 @@
 
                 // 1. Inyectamos el HTML
                 menuContainer.innerHTML = `
-        <a href="#" id="btnBolitaUsuario" class="user-avatar-btn" style="margin-left: 10px;">
+        <a href="#" id="btnBolitaUsuario" class="user-avatar-btn">
             <div class="avatar-text">${inicial}</div>
         </a>
-        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user animate slideIn" id="menuDesplegableUsuario">
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableUsuario">
             <li>
                 <div class="user-info-header">
                     <span class="user-role-badge"><i class="fa fa-user-circle"></i> Usuario</span>
@@ -1049,41 +1126,23 @@
         </ul>
         `;
 
-                // 2. Lógica Manual para Abrir/Cerrar
+                // 2. Agregar toggle al botón
                 const btnBolita = document.getElementById('btnBolitaUsuario');
-                const liPadre = document.getElementById('userMenuLi'); // Asegúrate que tu LI en el HTML tenga este ID
-
-                if (btnBolita && liPadre) {
+                if (btnBolita) {
                     btnBolita.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-
-                        if (liPadre.classList.contains('open')) {
-                            liPadre.classList.remove('open');
-                        } else {
-                            // Cierra otros menús si los hubiera
-                            document.querySelectorAll('.dropdown.open').forEach(el => el.classList.remove('open'));
-                            liPadre.classList.add('open');
-                        }
-                    });
-
-                    // 3. Cerrar al hacer click fuera
-                    document.addEventListener('click', (e) => {
-                        if (liPadre.classList.contains('open')) {
-                            if (!liPadre.contains(e.target)) {
-                                liPadre.classList.remove('open');
-                            }
-                        }
+                        document.getElementById('userMenuLi').classList.toggle('open');
                     });
                 }
 
             } else if (esEspectador) {
                 // --- CASO 2: ESPECTADOR ---
                 menuContainer.innerHTML = `
-        <a href="#" class="user-avatar-btn dropdown-toggle" data-toggle="dropdown" style="border-color: #999;" aria-haspopup="true" aria-expanded="false">
+        <a href="#" id="btnBolitaEspectador" class="user-avatar-btn" style="border-color: #999;">
             <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
         </a>
-        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user">
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableEspectador">
             <li>
                 <div class="user-info-header">
                     <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
@@ -1097,14 +1156,32 @@
         </ul>
         `;
 
+                // Agregar toggle al botón de espectador
+                const btnEspectador = document.getElementById('btnBolitaEspectador');
+                if (btnEspectador) {
+                    btnEspectador.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('userMenuLi').classList.toggle('open');
+                    });
+                }
+
             } else {
                 // --- CASO 3: VISITANTE ---
                 menuContainer.innerHTML = `
-        <a href="Login/login.html" class="btn btn-primary" style="border-radius: 20px; font-weight: bold; padding: 8px 20px; margin-top: 20px; margin-left: 10px;">
+        <a href="Login/login.html" class="btn btn-primary">
             <i class="fa fa-user"></i> Acceder
         </a>
         `;
             }
+
+            // Event listener global para cerrar menú al hacer click fuera (solo se agrega una vez)
+            document.addEventListener('click', (e) => {
+                const userMenuLi = document.getElementById('userMenuLi');
+                if (userMenuLi && userMenuLi.classList.contains('open') && !userMenuLi.contains(e.target)) {
+                    userMenuLi.classList.remove('open');
+                }
+            });
         });
 
         // 3. FUNCIÓN DE SALIDA
