@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginBtn.style.color = '#fff';
                 
                 setTimeout(() => {
-                    window.location.href = '../ranking.html';
+                    window.location.href = '../index-kenburns.html';
                 }, 1000);
 
             } catch (error) {
