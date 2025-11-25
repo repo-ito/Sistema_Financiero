@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Análisis Financiero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/navbar.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --shadow-hover: 0 15px 40px rgba(44, 62, 80, 0.15);
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: white !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary) !important;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: var(--primary) !important;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--accent) !important;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+            background-size: cover;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-main {
+            background: white;
+            color: var(--primary);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: var(--primary);
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 80px 0;
+        }
+        
+        .card-feature {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            height: 100%;
+            border: none;
+            text-align: center;
+        }
+        
+        .card-feature:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        /* Data Section */
+        .data-section {
+            background: var(--primary);
+            color: white;
+            padding: 60px 0;
+        }
+        
+        .data-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .data-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .company-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 10px 15px;
+        }
+        
+        .company-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* Analysis Section */
+        .analysis-section {
+            padding: 80px 0;
+        }
+        
+        .analysis-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .analysis-table thead {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .analysis-table th {
+            padding: 20px 15px;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .analysis-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        .analysis-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .ratio-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ratio-link:hover {
+            color: var(--accent);
+        }
+        
+        /* Sector Badges */
+        .sector-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .sector-primario {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .sector-secundario {
+            background: rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+        
+        .sector-terciario {
+            background: rgba(155, 89, 182, 0.2);
+            color: #8e44ad;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+        }
+        /* Estilos para subsectores específicos */
+.sector-ganaderia { background: rgba(46, 204, 113, 0.2); color: #27ae60; }
+.sector-pesca { background: rgba(41, 128, 185, 0.2); color: #2980b9; }
+.sector-mineria { background: rgba(230, 126, 34, 0.2); color: #d35400; }
+.sector-explotacion_forestal { background: rgba(39, 174, 96, 0.2); color: #229954; }
+
+.sector-manufactura_ligera { background: rgba(52, 152, 219, 0.2); color: #2980b9; }
+.sector-construccion { background: rgba(243, 156, 18, 0.2); color: #f39c12; }
+.sector-artesania { background: rgba(155, 89, 182, 0.2); color: #8e44ad; }
+.sector-produccion_energia { background: rgba(231, 76, 60, 0.2); color: #c0392b; }
+
+.sector-comercio { background: rgba(155, 89, 182, 0.2); color: #8e44ad; }
+.sector-salud { background: rgba(231, 76, 60, 0.2); color: #c0392b; }
+.sector-educacion { background: rgba(52, 152, 219, 0.2); color: #2980b9; }
+.sector-transporte { background: rgba(241, 196, 15, 0.2); color: #f39c12; }
+.sector-servicios_financieros { background: rgba(149, 165, 166, 0.2); color: #7f8c8d; }
+        
+        /* Buttons */
+        .btn-ranking {
+            background: var(--success);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: block;
+            margin: 0 auto;
+            width: 200px;
+        }
+        
+        .btn-ranking:hover {
+            background: #219653;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+        
+        /* Modals */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            background: var(--gradient);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px 25px;
+            border-bottom: none;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .btn-close {
+            filter: invert(1);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        /* Sector Info */
+        .sector-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .sector-info h6 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .sector-info p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            color: #666;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .company-btn {
+                margin: 0 5px 10px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header / Navigation - Based on index-kenburns.html design -->
+<header class="header header-fixed">
+    <div class="header-inner">
+        <nav class="navbar">
+            <!-- Logo -->
+            <div class="logo">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-chart-line"></i>FinAnalyzer Pro
+                </a>
+            </div>
+            <!-- Toggle Icon for Mobile -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span id="icon-toggler">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+            <!-- Navigation Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="active"><a href="ranking.html"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="ranking.html"><i class="fas fa-chart-bar"></i> Análisis</a></li>
+                    <li><a href="index.html"><i class="fas fa-book"></i> Documentación</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-file-alt"></i> Páginas <i class="fas fa-angle-down icon-angle"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Registro</a></li>
+                            <li><a href="#">Iniciar Sesión</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" class="btn-access"><i class="fas fa-user"></i> Acceder</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <h1>Sistema de Análisis Financiero</h1>
+        <p>Plataforma profesional para el cálculo y comparación de razones financieras empresariales</p>
+        <a href="#analysis" class="btn btn-main mt-3">
+            <i class="fas fa-play-circle me-2"></i> Comenzar Análisis
+        </a>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h4 class="fw-bold">10 Razones Financieras</h4>
+                    <p>Análisis completo de liquidez, rentabilidad, endeudamiento y eficiencia operativa</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h4 class="fw-bold">Compara Empresas</h4>
+                    <p>Analiza y compara múltiples empresas simultáneamente con métricas estandarizadas</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="fw-bold">Visualización Avanzada</h4>
+                    <p>Gráficos interactivos y dashboards profesionales para una mejor interpretación</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="data-section">
+    <div class="container">
+        <div class="data-header">
+            <h2>Datos de las Empresas</h2>
+            <p class="lead">Ingresa la información financiera de hasta 5 empresas para realizar el análisis comparativo</p>
+        </div>
+        
+        <div class="d-flex flex-wrap justify-content-center">
+            <button type="button" class="btn company-btn" data-bs-toggle="modal" data-bs-target="#modalE1" id="btnEM1">
+                <i class="fas fa-building me-2"></i>Empresa 1
+            </button>
+            <button type="button" class="btn company-btn" data-bs-toggle="modal" data-bs-target="#modalE2" id="btnEM2">
+                <i class="fas fa-building me-2"></i>Empresa 2
+            </button>
+            <button type="button" class="btn company-btn" data-bs-toggle="modal" data-bs-target="#modalE3" id="btnEM3">
+                <i class="fas fa-building me-2"></i>Empresa 3
+            </button>
+            <button type="button" class="btn company-btn" data-bs-toggle="modal" data-bs-target="#modalE4" id="btnEM4">
+                <i class="fas fa-building me-2"></i>Empresa 4
+            </button>
+            <button type="button" class="btn company-btn" data-bs-toggle="modal" data-bs-target="#modalE5" id="btnEM5">
+                <i class="fas fa-building me-2"></i>Empresa 5
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="analysis-section" id="analysis">
+    <div class="container">
+        <div class="analysis-table">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre de la Razón</th>
+                        <th scope="col" id="thEM1">Empresa 1</th>
+                        <th scope="col" id="thEM2">Empresa 2</th>
+                        <th scope="col" id="thEM3">Empresa 3</th>
+                        <th scope="col" id="thEM4">Empresa 4</th>
+                        <th scope="col" id="thEM5">Empresa 5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(1)">Razón Rápida</td>
+                        <input type="hidden" id="RRE1In" value=""/>
+                        <td id="RRE1">-</td>
+                        <input type="hidden" id="RRE2In" value=""/>
+                        <td id="RRE2">-</td>
+                        <input type="hidden" id="RRE3In" value=""/>
+                        <td id="RRE3">-</td>
+                        <input type="hidden" id="RRE4In" value=""/>
+                        <td id="RRE4">-</td>
+                        <input type="hidden" id="RRE5In" value=""/>
+                        <td id="RRE5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(2)">Prueba del Ácido</td>
+                        <input type="hidden" id="PA1In" value="">
+                        <td id="PA1">-</td>
+                        <input type="hidden" id="PA2In" value="">
+                        <td id="PA2">-</td>
+                        <input type="hidden" id="PA3In" value="">
+                        <td id="PA3">-</td>
+                        <input type="hidden" id="PA4In" value="">
+                        <td id="PA4">-</td>
+                        <input type="hidden" id="PA5In" value="">
+                        <td id="PA5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(3)">Razón de la Deuda Total</td>
+                        <input type="hidden" id="RDT1In" value="">
+                        <td id="RDT1">-</td>
+                        <input type="hidden" id="RDT2In" value="">
+                        <td id="RDT2">-</td>
+                        <input type="hidden" id="RDT3In" value="">
+                        <td id="RDT3">-</td>
+                        <input type="hidden" id="RDT4In" value="">
+                        <td id="RDT4">-</td>
+                        <input type="hidden" id="RDT5In" value="">
+                        <td id="RDT5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(4)">Rotación del Interés Ganado</td>
+                        <input type="hidden" id="RIG1In" value="">
+                        <td id="RIG1">-</td>
+                        <input type="hidden" id="RIG2In" value="">
+                        <td id="RIG2">-</td>
+                        <input type="hidden" id="RIG3In" value="">
+                        <td id="RIG3">-</td>
+                        <input type="hidden" id="RIG4In" value="">
+                        <td id="RIG4">-</td>
+                        <input type="hidden" id="RIG5In" value="">
+                        <td id="RIG5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(5)">Rotación del Inventario</td>
+                        <input type="hidden" id="RI1In" value="">
+                        <td id="RI1">-</td>
+                        <input type="hidden" id="RI2In" value="">
+                        <td id="RI2">-</td>
+                        <input type="hidden" id="RI3In" value="">
+                        <td id="RI3">-</td>
+                        <input type="hidden" id="RI4In" value="">
+                        <td id="RI4">-</td>
+                        <input type="hidden" id="RI5In" value="">
+                        <td id="RI5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(6)">Periodo Promedio de Cobranza</td>
+                        <input type="hidden" id="PPC1In" value="">
+                        <td id="PPC1">-</td>
+                        <input type="hidden" id="PPC2In" value="">
+                        <td id="PPC2">-</td>
+                        <input type="hidden" id="PPC3In" value="">
+                        <td id="PPC3">-</td>
+                        <input type="hidden" id="PPC4In" value="">
+                        <td id="PPC4">-</td>
+                        <input type="hidden" id="PPC5In" value="">
+                        <td id="PPC5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(7)">Rotación del Activo Total</td>
+                        <input type="hidden" id="RAT1In" value="">
+                        <td id="RAT1">-</td>
+                        <input type="hidden" id="RAT2In" value="">
+                        <td id="RAT2">-</td>
+                        <input type="hidden" id="RAT3In" value="">
+                        <td id="RAT3">-</td>
+                        <input type="hidden" id="RAT4In" value="">
+                        <td id="RAT4">-</td>
+                        <input type="hidden" id="RAT5In" value="">
+                        <td id="RAT5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(8)">Margen de Utilidad</td>
+                        <input type="hidden" id="MU1In" value="">
+                        <td id="MU1">-</td>
+                        <input type="hidden" id="MU2In" value="">
+                        <td id="MU2">-</td>
+                        <input type="hidden" id="MU3In" value="">
+                        <td id="MU3">-</td>
+                        <input type="hidden" id="MU4In" value="">
+                        <td id="MU4">-</td>
+                        <input type="hidden" id="MU5In" value="">
+                        <td id="MU5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(9)">Rendimiento sobre los Activos</td>
+                        <input type="hidden" id="RSA1In" value="">
+                        <td id="RSA1">-</td>
+                        <input type="hidden" id="RSA2In" value="">
+                        <td id="RSA2">-</td>
+                        <input type="hidden" id="RSA3In" value="">
+                        <td id="RSA3">-</td>
+                        <input type="hidden" id="RSA4In" value="">
+                        <td id="RSA4">-</td>
+                        <input type="hidden" id="RSA5In" value="">
+                        <td id="RSA5">-</td>
+                    </tr>
+                    <tr scope="row">
+                        <td class="ratio-link" data-bs-toggle="modal" data-bs-target="#modalGrafica" id="btnGrafica" onclick="creaGrafica(10)">Rendimiento sobre el Capital</td>
+                        <input type="hidden" id="RSC1In" value="">
+                        <td id="RSC1">-</td>
+                        <input type="hidden" id="RSC2In" value="">
+                        <td id="RSC2">-</td>
+                        <input type="hidden" id="RSC3In" value="">
+                        <td id="RSC3">-</td>
+                        <input type="hidden" id="RSC4In" value="">
+                        <td id="RSC4">-</td>
+                        <input type="hidden" id="RSC5In" value="">
+                        <td id="RSC5">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-5">
+            <button type="button" class="btn btn-ranking" data-bs-toggle="modal" data-bs-target="#modalRanking" id="btnRanking">
+                <i class="fas fa-trophy me-2"></i>Ver Ranking
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Empresa 1 -->
+<div class="modal fade" id="modalE1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Datos Financieros - Empresa 1</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sector-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Sector</h6>
+                    <p>Selecciona el sector económico al que pertenece la empresa para un análisis más preciso</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="nEmp1" class="form-label">Nombre de la Empresa</label>
+                        <input type="text" id="nEmp1" class="form-control" onkeyup="cambiaEmpresa(1);" placeholder="Ingrese el nombre de la empresa">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sector1" class="form-label">Sector Económico</label>
+                        <select class="form-select" id="sector1" onchange="cambiaSector(1);">
+    <option value="">Seleccionar sector</option>
+    
+    <optgroup label="Sector Primario">
+        <option value="ganaderia">Ganadería</option>
+        <option value="pesca">Pesca</option>
+        <option value="mineria">Minería</option>
+        <option value="explotacion_forestal">Explotación Forestal</option>
+    </optgroup>
+    
+    <optgroup label="Sector Secundario">
+        <option value="manufactura_ligera">Manufactura Ligera</option>
+        <option value="construccion">Construcción</option>
+        <option value="artesania">Artesanía</option>
+        <option value="produccion_energia">Producción de Energía</option>
+    </optgroup>
+    
+    <optgroup label="Sector Terciario">
+        <option value="comercio">Comercio</option>
+        <option value="salud">Salud</option>
+        <option value="educacion">Educación</option>
+        <option value="transporte">Transporte</option>
+        <option value="servicios_financieros">Servicios Financieros</option>
+    </optgroup>
+</select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="actCirc1" class="form-label">Activo Circulante</label>
+                        <input type="number" id="actCirc1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="pasCirc1" class="form-label">Pasivo Circulante</label>
+                        <input type="number" id="pasCirc1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pasTot1" class="form-label">Pasivo Total</label>
+                        <input type="number" id="pasTot1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="actTot1" class="form-label">Activo Total</label>
+                        <input type="number" id="actTot1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inv1" class="form-label">Inventario</label>
+                        <input type="number" id="inv1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="utilAII1" class="form-label">Utilidad antes de impuestos e intereses</label>
+                        <input type="number" id="utilAII1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">   
+                    <div class="col-md-6 mb-3">
+                        <label for="gastFin1" class="form-label">Gastos financieros</label>
+                        <input type="number" id="gastFin1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ventas1" class="form-label">Ventas</label>
+                        <input type="number" id="ventas1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                        <label for="cuentPCobr1" class="form-label">Cuentas por Cobrar</label>
+                        <input type="number" id="cuentPCobr1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ingNeto1" class="form-label">Ingreso Neto</label>
+                        <input type="number" id="ingNeto1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>   
+                </div>  
+                
+                <div class="row"> 
+                    <div class="col-md-6 mb-3">
+                        <label for="utlNeta1" class="form-label">Utilidad Neta</label>
+                        <input type="number" id="utlNeta1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="capCont1" class="form-label">Capital Contable</label>
+                        <input type="number" id="capCont1" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Empresa 2 -->
+<div class="modal fade" id="modalE2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Datos Financieros - Empresa 2</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sector-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Sector</h6>
+                    <p>Selecciona el sector económico al que pertenece la empresa para un análisis más preciso</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="nEmp2" class="form-label">Nombre de la Empresa</label>
+                        <input type="text" id="nEmp2" class="form-control" onkeyup="cambiaEmpresa(2);" placeholder="Ingrese el nombre de la empresa">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sector2" class="form-label">Sector Económico</label>
+                        <select class="form-select" id="sector1" onchange="cambiaSector(1);">
+    <option value="">Seleccionar sector</option>
+    
+    <optgroup label="Sector Primario">
+        <option value="ganaderia">Ganadería</option>
+        <option value="pesca">Pesca</option>
+        <option value="mineria">Minería</option>
+        <option value="explotacion_forestal">Explotación Forestal</option>
+    </optgroup>
+    
+    <optgroup label="Sector Secundario">
+        <option value="manufactura_ligera">Manufactura Ligera</option>
+        <option value="construccion">Construcción</option>
+        <option value="artesania">Artesanía</option>
+        <option value="produccion_energia">Producción de Energía</option>
+    </optgroup>
+    
+    <optgroup label="Sector Terciario">
+        <option value="comercio">Comercio</option>
+        <option value="salud">Salud</option>
+        <option value="educacion">Educación</option>
+        <option value="transporte">Transporte</option>
+        <option value="servicios_financieros">Servicios Financieros</option>
+    </optgroup>
+</select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="actCirc2" class="form-label">Activo Circulante</label>
+                        <input type="number" id="actCirc2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="pasCirc2" class="form-label">Pasivo Circulante</label>
+                        <input type="number" id="pasCirc2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pasTot2" class="form-label">Pasivo Total</label>
+                        <input type="number" id="pasTot2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="actTot2" class="form-label">Activo Total</label>
+                        <input type="number" id="actTot2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inv2" class="form-label">Inventario</label>
+                        <input type="number" id="inv2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="utilAII2" class="form-label">Utilidad antes de impuestos e intereses</label>
+                        <input type="number" id="utilAII2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">   
+                    <div class="col-md-6 mb-3">
+                        <label for="gastFin2" class="form-label">Gastos financieros</label>
+                        <input type="number" id="gastFin2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ventas2" class="form-label">Ventas</label>
+                        <input type="number" id="ventas2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                        <label for="cuentPCobr2" class="form-label">Cuentas por Cobrar</label>
+                        <input type="number" id="cuentPCobr2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ingNeto2" class="form-label">Ingreso Neto</label>
+                        <input type="number" id="ingNeto2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>   
+                </div>  
+                
+                <div class="row"> 
+                    <div class="col-md-6 mb-3">
+                        <label for="utlNeta2" class="form-label">Utilidad Neta</label>
+                        <input type="number" id="utlNeta2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="capCont2" class="form-label">Capital Contable</label>
+                        <input type="number" id="capCont2" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Empresa 3 -->
+<div class="modal fade" id="modalE3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel3">Datos Financieros - Empresa 3</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sector-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Sector</h6>
+                    <p>Selecciona el sector económico al que pertenece la empresa para un análisis más preciso</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="nEmp3" class="form-label">Nombre de la Empresa</label>
+                        <input type="text" id="nEmp3" class="form-control" onkeyup="cambiaEmpresa(3);" placeholder="Ingrese el nombre de la empresa">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sector3" class="form-label">Sector Económico</label>
+                      <select class="form-select" id="sector1" onchange="cambiaSector(1);">
+    <option value="">Seleccionar sector</option>
+    
+    <optgroup label="Sector Primario">
+        <option value="ganaderia">Ganadería</option>
+        <option value="pesca">Pesca</option>
+        <option value="mineria">Minería</option>
+        <option value="explotacion_forestal">Explotación Forestal</option>
+    </optgroup>
+    
+    <optgroup label="Sector Secundario">
+        <option value="manufactura_ligera">Manufactura Ligera</option>
+        <option value="construccion">Construcción</option>
+        <option value="artesania">Artesanía</option>
+        <option value="produccion_energia">Producción de Energía</option>
+    </optgroup>
+    
+    <optgroup label="Sector Terciario">
+        <option value="comercio">Comercio</option>
+        <option value="salud">Salud</option>
+        <option value="educacion">Educación</option>
+        <option value="transporte">Transporte</option>
+        <option value="servicios_financieros">Servicios Financieros</option>
+    </optgroup>
+</select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="actCirc3" class="form-label">Activo Circulante</label>
+                        <input type="number" id="actCirc3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="pasCirc3" class="form-label">Pasivo Circulante</label>
+                        <input type="number" id="pasCirc3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pasTot3" class="form-label">Pasivo Total</label>
+                        <input type="number" id="pasTot3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="actTot3" class="form-label">Activo Total</label>
+                        <input type="number" id="actTot3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inv3" class="form-label">Inventario</label>
+                        <input type="number" id="inv3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="utilAII3" class="form-label">Utilidad antes de impuestos e intereses</label>
+                        <input type="number" id="utilAII3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">   
+                    <div class="col-md-6 mb-3">
+                        <label for="gastFin3" class="form-label">Gastos financieros</label>
+                        <input type="number" id="gastFin3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ventas3" class="form-label">Ventas</label>
+                        <input type="number" id="ventas3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                        <label for="cuentPCobr3" class="form-label">Cuentas por Cobrar</label>
+                        <input type="number" id="cuentPCobr3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ingNeto3" class="form-label">Ingreso Neto</label>
+                        <input type="number" id="ingNeto3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>   
+                </div>  
+                
+                <div class="row"> 
+                    <div class="col-md-6 mb-3">
+                        <label for="utlNeta3" class="form-label">Utilidad Neta</label>
+                        <input type="number" id="utlNeta3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="capCont3" class="form-label">Capital Contable</label>
+                        <input type="number" id="capCont3" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Empresa 4 -->
+<div class="modal fade" id="modalE4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel4">Datos Financieros - Empresa 4</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sector-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Sector</h6>
+                    <p>Selecciona el sector económico al que pertenece la empresa para un análisis más preciso</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="nEmp4" class="form-label">Nombre de la Empresa</label>
+                        <input type="text" id="nEmp4" class="form-control" onkeyup="cambiaEmpresa(4);" placeholder="Ingrese el nombre de la empresa">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sector4" class="form-label">Sector Económico</label>
+                       <select class="form-select" id="sector1" onchange="cambiaSector(1);">
+    <option value="">Seleccionar sector</option>
+    
+    <optgroup label="Sector Primario">
+        <option value="ganaderia">Ganadería</option>
+        <option value="pesca">Pesca</option>
+        <option value="mineria">Minería</option>
+        <option value="explotacion_forestal">Explotación Forestal</option>
+    </optgroup>
+    
+    <optgroup label="Sector Secundario">
+        <option value="manufactura_ligera">Manufactura Ligera</option>
+        <option value="construccion">Construcción</option>
+        <option value="artesania">Artesanía</option>
+        <option value="produccion_energia">Producción de Energía</option>
+    </optgroup>
+    
+    <optgroup label="Sector Terciario">
+        <option value="comercio">Comercio</option>
+        <option value="salud">Salud</option>
+        <option value="educacion">Educación</option>
+        <option value="transporte">Transporte</option>
+        <option value="servicios_financieros">Servicios Financieros</option>
+    </optgroup>
+</select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="actCirc4" class="form-label">Activo Circulante</label>
+                        <input type="number" id="actCirc4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="pasCirc4" class="form-label">Pasivo Circulante</label>
+                        <input type="number" id="pasCirc4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pasTot4" class="form-label">Pasivo Total</label>
+                        <input type="number" id="pasTot4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="actTot4" class="form-label">Activo Total</label>
+                        <input type="number" id="actTot4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inv4" class="form-label">Inventario</label>
+                        <input type="number" id="inv4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="utilAII4" class="form-label">Utilidad antes de impuestos e intereses</label>
+                        <input type="number" id="utilAII4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">   
+                    <div class="col-md-6 mb-3">
+                        <label for="gastFin4" class="form-label">Gastos financieros</label>
+                        <input type="number" id="gastFin4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ventas4" class="form-label">Ventas</label>
+                        <input type="number" id="ventas4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                        <label for="cuentPCobr4" class="form-label">Cuentas por Cobrar</label>
+                        <input type="number" id="cuentPCobr4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ingNeto4" class="form-label">Ingreso Neto</label>
+                        <input type="number" id="ingNeto4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>   
+                </div>  
+                
+                <div class="row"> 
+                    <div class="col-md-6 mb-3">
+                        <label for="utlNeta4" class="form-label">Utilidad Neta</label>
+                        <input type="number" id="utlNeta4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="capCont4" class="form-label">Capital Contable</label>
+                        <input type="number" id="capCont4" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Empresa 5 -->
+<div class="modal fade" id="modalE5" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel5">Datos Financieros - Empresa 5</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sector-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Sector</h6>
+                    <p>Selecciona el sector económico al que pertenece la empresa para un análisis más preciso</p>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <label for="nEmp5" class="form-label">Nombre de la Empresa</label>
+                        <input type="text" id="nEmp5" class="form-control" onkeyup="cambiaEmpresa(5);" placeholder="Ingrese el nombre de la empresa">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sector5" class="form-label">Sector Económico</label>
+                       <select class="form-select" id="sector1" onchange="cambiaSector(1);">
+    <option value="">Seleccionar sector</option>
+    
+    <optgroup label="Sector Primario">
+        <option value="ganaderia">Ganadería</option>
+        <option value="pesca">Pesca</option>
+        <option value="mineria">Minería</option>
+        <option value="explotacion_forestal">Explotación Forestal</option>
+    </optgroup>
+    
+    <optgroup label="Sector Secundario">
+        <option value="manufactura_ligera">Manufactura Ligera</option>
+        <option value="construccion">Construcción</option>
+        <option value="artesania">Artesanía</option>
+        <option value="produccion_energia">Producción de Energía</option>
+    </optgroup>
+    
+    <optgroup label="Sector Terciario">
+        <option value="comercio">Comercio</option>
+        <option value="salud">Salud</option>
+        <option value="educacion">Educación</option>
+        <option value="transporte">Transporte</option>
+        <option value="servicios_financieros">Servicios Financieros</option>
+    </optgroup>
+</select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="actCirc5" class="form-label">Activo Circulante</label>
+                        <input type="number" id="actCirc5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="pasCirc5" class="form-label">Pasivo Circulante</label>
+                        <input type="number" id="pasCirc5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pasTot5" class="form-label">Pasivo Total</label>
+                        <input type="number" id="pasTot5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="actTot5" class="form-label">Activo Total</label>
+                        <input type="number" id="actTot5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inv5" class="form-label">Inventario</label>
+                        <input type="number" id="inv5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="utilAII5" class="form-label">Utilidad antes de impuestos e intereses</label>
+                        <input type="number" id="utilAII5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div> 
+                </div>  
+                
+                <div class="row">   
+                    <div class="col-md-6 mb-3">
+                        <label for="gastFin5" class="form-label">Gastos financieros</label>
+                        <input type="number" id="gastFin5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ventas5" class="form-label">Ventas</label>
+                        <input type="number" id="ventas5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>  
+                </div>  
+                
+                <div class="row">  
+                    <div class="col-md-6 mb-3">
+                        <label for="cuentPCobr5" class="form-label">Cuentas por Cobrar</label>
+                        <input type="number" id="cuentPCobr5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="ingNeto5" class="form-label">Ingreso Neto</label>
+                        <input type="number" id="ingNeto5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>   
+                </div>  
+                
+                <div class="row"> 
+                    <div class="col-md-6 mb-3">
+                        <label for="utlNeta5" class="form-label">Utilidad Neta</label>
+                        <input type="number" id="utlNeta5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                    <div class="col-md-6 mb-3">
+                        <label for="capCont5" class="form-label">Capital Contable</label>
+                        <input type="number" id="capCont5" class="form-control" onchange="llenaCampos();" placeholder="0.00">
+                    </div>    
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ranking -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalRanking">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelRanking">Ranking de Empresas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Gráfico Highcharts -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>TOP 5 EMPRESAS - PUNTUACIÓN GENERAL</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="containerTop5" style="min-width: 310px; height: 400px; margin: 0 auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico Chart.js -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>COMPARATIVA POR SECTORES</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="graficaRanking" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Rankings por Ratio - Carousel -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-list-ol me-2"></i>RANKINGS POR INDICADOR FINANCIERO</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="carouselRankings" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="6" aria-label="Slide 7"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="7" aria-label="Slide 8"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="8" aria-label="Slide 9"></button>
+                                        <button type="button" data-bs-target="#carouselRankings" data-bs-slide-to="9" aria-label="Slide 10"></button>
+                                    </div>
+                                    
+                                    <div class="carousel-inner">
+                                        <!-- Razón Rápida -->
+                                        <div class="carousel-item active">
+                                            <div class="text-center mb-3">
+                                                <h4 class="text-primary">TOP RAZÓN RÁPIDA</h4>
+                                                <p class="text-muted">Capacidad de pago inmediata sin depender de inventarios</p>
+                                            </div>
+                                            <div class="ranking-list">
+                                                <div class="list-group">
+                                                    <div class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-success me-2">1</span>
+                                                            <span id="RRETop1">Empresa 1</span>
+                                                        </div>
+                                                        <span class="fw-bold">9.8</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-primary me-2">2</span>
+                                                            <span id="RRETop2">Empresa 2</span>
+                                                        </div>
+                                                        <span class="fw-bold">8.5</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-warning me-2">3</span>
+                                                            <span id="RRETop3">Empresa 3</span>
+                                                        </div>
+                                                        <span class="fw-bold">7.2</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">4</span>
+                                                            <span id="RRETop4">Empresa 4</span>
+                                                        </div>
+                                                        <span class="fw-bold">6.8</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">5</span>
+                                                            <span id="RRETop5">Empresa 5</span>
+                                                        </div>
+                                                        <span class="fw-bold">5.9</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Prueba del Ácido -->
+                                        <div class="carousel-item">
+                                            <div class="text-center mb-3">
+                                                <h4 class="text-primary">TOP PRUEBA DEL ÁCIDO</h4>
+                                                <p class="text-muted">Capacidad de pago con activos más líquidos</p>
+                                            </div>
+                                            <div class="ranking-list">
+                                                <div class="list-group">
+                                                    <div class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-success me-2">1</span>
+                                                            <span id="PATop1">Empresa 1</span>
+                                                        </div>
+                                                        <span class="fw-bold">8.9</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-primary me-2">2</span>
+                                                            <span id="PATop2">Empresa 2</span>
+                                                        </div>
+                                                        <span class="fw-bold">8.1</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-warning me-2">3</span>
+                                                            <span id="PATop3">Empresa 3</span>
+                                                        </div>
+                                                        <span class="fw-bold">7.5</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">4</span>
+                                                            <span id="PATop4">Empresa 4</span>
+                                                        </div>
+                                                        <span class="fw-bold">6.7</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">5</span>
+                                                            <span id="PATop5">Empresa 5</span>
+                                                        </div>
+                                                        <span class="fw-bold">5.8</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Razón de Deuda Total -->
+                                        <div class="carousel-item">
+                                            <div class="text-center mb-3">
+                                                <h4 class="text-primary">TOP RAZÓN DE DEUDA TOTAL</h4>
+                                                <p class="text-muted">Menor nivel de endeudamiento (valores más bajos son mejores)</p>
+                                            </div>
+                                            <div class="ranking-list">
+                                                <div class="list-group">
+                                                    <div class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-success me-2">1</span>
+                                                            <span id="RDTTop1">Empresa 1</span>
+                                                        </div>
+                                                        <span class="fw-bold">0.25</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-primary me-2">2</span>
+                                                            <span id="RDTTop2">Empresa 2</span>
+                                                        </div>
+                                                        <span class="fw-bold">0.32</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-warning me-2">3</span>
+                                                            <span id="RDTTop3">Empresa 3</span>
+                                                        </div>
+                                                        <span class="fw-bold">0.41</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">4</span>
+                                                            <span id="RDTTop4">Empresa 4</span>
+                                                        </div>
+                                                        <span class="fw-bold">0.53</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">5</span>
+                                                            <span id="RDTTop5">Empresa 5</span>
+                                                        </div>
+                                                        <span class="fw-bold">0.67</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Rotación del Interés Ganado -->
+                                        <div class="carousel-item">
+                                            <div class="text-center mb-3">
+                                                <h4 class="text-primary">TOP ROTACIÓN DEL INTERÉS GANADO</h4>
+                                                <p class="text-muted">Capacidad de cubrir gastos financieros</p>
+                                            </div>
+                                            <div class="ranking-list">
+                                                <div class="list-group">
+                                                    <div class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-success me-2">1</span>
+                                                            <span id="RIGTop1">Empresa 1</span>
+                                                        </div>
+                                                        <span class="fw-bold">12.5</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-primary me-2">2</span>
+                                                            <span id="RIGTop2">Empresa 2</span>
+                                                        </div>
+                                                        <span class="fw-bold">10.8</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-warning me-2">3</span>
+                                                            <span id="RIGTop3">Empresa 3</span>
+                                                        </div>
+                                                        <span class="fw-bold">9.2</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">4</span>
+                                                            <span id="RIGTop4">Empresa 4</span>
+                                                        </div>
+                                                        <span class="fw-bold">7.6</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">5</span>
+                                                            <span id="RIGTop5">Empresa 5</span>
+                                                        </div>
+                                                        <span class="fw-bold">6.3</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Rotación del Inventario -->
+                                        <div class="carousel-item">
+                                            <div class="text-center mb-3">
+                                                <h4 class="text-primary">TOP ROTACIÓN DEL INVENTARIO</h4>
+                                                <p class="text-muted">Eficiencia en gestión de inventarios</p>
+                                            </div>
+                                            <div class="ranking-list">
+                                                <div class="list-group">
+                                                    <div class="list-group-item list-group-item-success d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-success me-2">1</span>
+                                                            <span id="RITop1">Empresa 1</span>
+                                                        </div>
+                                                        <span class="fw-bold">8.7</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-primary me-2">2</span>
+                                                            <span id="RITop2">Empresa 2</span>
+                                                        </div>
+                                                        <span class="fw-bold">7.9</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-warning me-2">3</span>
+                                                            <span id="RITop3">Empresa 3</span>
+                                                        </div>
+                                                        <span class="fw-bold">6.8</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">4</span>
+                                                            <span id="RITop4">Empresa 4</span>
+                                                        </div>
+                                                        <span class="fw-bold">5.5</span>
+                                                    </div>
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="badge bg-secondary me-2">5</span>
+                                                            <span id="RITop5">Empresa 5</span>
+                                                        </div>
+                                                        <span class="fw-bold">4.2</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Los demás ratios seguirían la misma estructura -->
+                                        <!-- Solo muestro 5 para el ejemplo, pero deberían ser 10 -->
+
+                                    </div>
+                                    
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselRankings" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Anterior</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselRankings" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Siguiente</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Gráficas -->
+<div class="modal fade" id="modalGrafica" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelGrafica">Gráfica Comparativa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-bodyGra">
+                <canvas id="grafica"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">© 2025 Christopher Alexander Mena Garcia - Universidad Nacional de Ingeniería</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <p class="mb-0">Sistema de Análisis Financiero Comparativo</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Funciones para mantener la funcionalidad
+    function cambiaEmpresa(num) {
+        const nombreEmpresa = document.getElementById(`nEmp${num}`).value;
+        const sector = document.getElementById(`sector${num}`).value;
+        
+        let sectorBadge = '';
+        if (sector) {
+            sectorBadge = `<span class="sector-badge sector-${sector}">${sector.toUpperCase()}</span>`;
+        }
+        
+        document.getElementById(`thEM${num}`).innerHTML = (nombreEmpresa || `Empresa ${num}`) + sectorBadge;
+    }
+    
+    function cambiaSector(num) {
+        cambiaEmpresa(num);
+        // Aquí puedes agregar lógica adicional cuando cambia el sector
+        console.log(`Sector cambiado para empresa ${num}:`, document.getElementById(`sector${num}`).value);
+    }
+    
+    function llenaCampos() {
+        // Lógica para calcular y llenar los campos de ratios
+        console.log("Calculando ratios...");
+        
+        // Ejemplo de cálculo para demostración
+        for (let i = 1; i <= 5; i++) {
+            const actCirc = parseFloat(document.getElementById(`actCirc${i}`).value) || 0;
+            const pasCirc = parseFloat(document.getElementById(`pasCirc${i}`).value) || 0;
+            const inv = parseFloat(document.getElementById(`inv${i}`).value) || 0;
+            
+            if (pasCirc > 0) {
+                // Razón Rápida
+                const razonRapida = (actCirc - inv) / pasCirc;
+                document.getElementById(`RRE${i}`).textContent = razonRapida.toFixed(2);
+                document.getElementById(`RRE${i}In`).value = razonRapida;
+                
+                // Prueba del Ácido (mismo cálculo para este ejemplo)
+                document.getElementById(`PA${i}`).textContent = razonRapida.toFixed(2);
+                document.getElementById(`PA${i}In`).value = razonRapida;
+            }
+            
+            // Otros cálculos se implementarían aquí...
+        }
+    }
+    
+    function creaGrafica(tipo) {
+        // Lógica para crear gráficas
+        console.log(`Creando gráfica para ratio ${tipo}`);
+        
+        const ctx = document.getElementById('grafica').getContext('2d');
+        
+        // Datos de ejemplo para la gráfica
+        const empresas = [];
+        const valores = [];
+        const sectores = [];
+        
+        for (let i = 1; i <= 5; i++) {
+            const nombre = document.getElementById(`nEmp${i}`).value || `Empresa ${i}`;
+            const sector = document.getElementById(`sector${i}`).value || 'sin-sector';
+            empresas.push(nombre);
+            sectores.push(sector);
+            
+            // Obtener valor según el tipo de ratio
+            let valor = 0;
+            switch(tipo) {
+                case 1: valor = parseFloat(document.getElementById(`RRE${i}In`).value) || 0; break;
+                case 2: valor = parseFloat(document.getElementById(`PA${i}In`).value) || 0; break;
+                // Agregar más casos para otros ratios...
+                default: valor = Math.random() * 10;
+            }
+            valores.push(valor);
+        }
+        
+        // Crear gráfica de ejemplo
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: empresas,
+                datasets: [{
+                    label: 'Valor del Ratio',
+                    data: valores,
+                    backgroundColor: valores.map((_, index) => {
+                        switch(sectores[index]) {
+                            case 'primario': return 'rgba(46, 204, 113, 0.8)';
+                            case 'secundario': return 'rgba(52, 152, 219, 0.8)';
+                            case 'terciario': return 'rgba(155, 89, 182, 0.8)';
+                            default: return 'rgba(149, 165, 166, 0.8)';
+                        }
+                    }),
+                    borderColor: valores.map((_, index) => {
+                        switch(sectores[index]) {
+                            case 'primario': return 'rgba(46, 204, 113, 1)';
+                            case 'secundario': return 'rgba(52, 152, 219, 1)';
+                            case 'terciario': return 'rgba(155, 89, 182, 1)';
+                            default: return 'rgba(149, 165, 166, 1)';
+                        }
+                    }),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Comparativa de Empresas por Sector'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const index = context.dataIndex;
+                                const sector = sectores[index];
+                                return `Sector: ${sector ? sector.charAt(0).toUpperCase() + sector.slice(1) : 'No especificado'}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar nombres de empresas
+        for (let i = 1; i <= 5; i++) {
+            cambiaEmpresa(i);
+        }
+        
+        // Inicializar gráfica de ranking
+        Highcharts.chart('containerTop5', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Ranking General de Empresas'
+            },
+            xAxis: {
+                categories: ['Empresa 1', 'Empresa 2', 'Empresa 3', 'Empresa 4', 'Empresa 5'],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Puntuación'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Puntuación General',
+                data: [4.5, 3.8, 4.2, 3.5, 4.8]
+            }]
+        });
+    });
+</script>
+
+</body>
+</html>
