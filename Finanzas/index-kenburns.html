@@ -1,0 +1,1209 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>FinAnalyzer Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.png">
+
+    <!-- Template CSS Files -->
+    <link rel="stylesheet" type="text/css" href="css/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/magnific-popup.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/skins/yellow.css" />
+
+    <!-- Revolution Slider CSS Files -->
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/settings.css" />
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/layers.css" />
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/navigation.css" />
+
+    <!-- Template JS Files -->
+    <script src="js/modernizr.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* --- ESTILOS DEL PERFIL DE USUARIO (BOLITA) --- */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #3498db;
+        }
+
+        /* Container del menú de usuario - previene herencia de estilos del navbar */
+        #userMenuLi {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 0 !important;
+            position: relative !important;
+            vertical-align: middle !important;
+            height: auto !important;
+        }
+
+        /* Evitar que el li herede estilos de hover del navbar */
+        #userMenuLi:hover,
+        #userMenuLi.active,
+        #userMenuLi:hover::after,
+        #userMenuLi.active::after,
+        #userMenuLi > a::after {
+            background: none !important;
+            content: none !important;
+        }
+
+        #userMenuContainer {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 100%;
+        }
+
+        /* Botón Avatar - dimensiones fijas para evitar estiramiento */
+        .user-avatar-btn {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            max-width: 40px !important;
+            max-height: 40px !important;
+            border-radius: 50% !important;
+            border: 2px solid var(--accent) !important;
+            background: white !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer;
+            transition: box-shadow 0.3s, border-color 0.3s !important;
+            text-decoration: none !important;
+            margin: 0 10px !important;
+            padding: 0 !important;
+            flex-shrink: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            line-height: 1 !important;
+        }
+
+        .user-avatar-btn:hover {
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            text-decoration: none !important;
+        }
+
+        /* Evitar que el hover agregue línea debajo */
+        #userMenuLi:hover .user-avatar-btn::after,
+        #userMenuLi.active .user-avatar-btn::after,
+        .user-avatar-btn::after {
+            display: none !important;
+        }
+
+        .avatar-text {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        /* Menú Desplegable - estilos que sobrescriben el template */
+        .dropdown-menu-user {
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
+            width: auto;
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            padding: 10px !important;
+            min-width: 240px;
+            margin-top: 10px !important;
+            background: #fff !important;
+            z-index: 1000 !important;
+            /* Oculto por defecto */
+            transform: scale(1, 0) !important;
+            transform-origin: top !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s !important;
+        }
+
+        /* Mostrar menú cuando el padre tiene clase 'open' */
+        #userMenuLi.open .dropdown-menu-user {
+            transform: scale(1, 1) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Cabecera del usuario dentro del menú */
+        .user-info-header {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-role-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .user-email-text {
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 500;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Items del menú */
+        .dropdown-menu-user>li {
+            list-style: none !important;
+        }
+
+        .dropdown-menu-user>li>a {
+            border-radius: 6px;
+            padding: 8px 15px !important;
+            font-size: 0.95rem;
+            color: #2c3e50 !important;
+            display: block;
+            text-decoration: none;
+            text-transform: none !important;
+        }
+
+        .dropdown-menu-user>li>a:hover {
+            background: rgba(52, 152, 219, 0.1) !important;
+            color: var(--accent) !important;
+        }
+
+        .dropdown-menu-user>li>a.logout:hover {
+            background: rgba(231, 76, 60, 0.1) !important;
+            color: #e74c3c !important;
+        }
+
+        /* Botón de acceder para visitantes */
+        #userMenuContainer .btn-primary {
+            margin: 0 10px !important;
+            padding: 8px 20px !important;
+            border-radius: 20px !important;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Animación */
+        .animate {
+            animation-duration: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .slideIn {
+            animation-name: slideIn;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="double-diagonal">
+    <!-- Preloader Starts -->
+    <div class="preloader" id="preloader">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+        </a>
+        <div class="loader" id="loader"></div>
+    </div>
+
+    <!-- Live Style Switcher Ends - demo only -->
+    <!-- Page Wrapper Starts -->
+    <div class="wrapper">
+        <!-- Header Starts -->
+        <header class="header">
+            <div class="header-inner">
+                <!-- Navbar Starts -->
+                <nav class="navbar">
+                    <!-- Logo Starts -->
+                    <div class="logo">
+                        <a class="navbar-brand" href="index.html">
+                            <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+                        </a>
+                    </div>
+                    <!-- Logo Ends -->
+                    <!-- Toggle Icon for Mobile Starts -->
+                    <button class="navbar-toggle navbar-toggler" type="button" data-toggle="collapse"
+                        data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span id="icon-toggler">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                    <!-- Toggle Icon for Mobile Ends -->
+                    <div id="navbarSupportedContent" class="collapse navbar-collapse navbar-responsive-collapse">
+                        <!-- Main Menu Starts -->
+                        <ul class="nav navbar-nav" id="main-navigation">
+                            <li class="active"><a href="index-kenburns.html"><i class="fa fa-home"></i> Home</a></li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-file-text-o"></i> pages <i
+                                        class="fa fa-angle-down icon-angle"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="register.html">Registro</a></li>
+                                    <li><a href="login.html">Inicio de sesión</a></li>
+                                    <li><a href="shopping-cart.html">Carrito de compras</a></li>
+                                    <li><a href="shopping-checkout.html">Pago de compras</a></li>
+                                </ul>
+                            </li>
+                            <!-- Cart Icon Starts -->
+                            <li class="cart hidden-xs hidden-sm"><a href="shopping-cart.html"><i
+                                        class="fa fa-shopping-cart"></i></a></li>
+                            <!-- Cart Icon Starts -->
+                            <!-- Search Icon Starts -->
+                            <li class="search hidden-xs hidden-sm"><button id="search-button"
+                                    class="fa fa-search"></button></li>
+                            <!-- Search Icon Ends -->
+                            <!-- User Menu Starts -->
+                            <li class="dropdown" id="userMenuLi">
+                                <div id="userMenuContainer">
+                                </div>
+                            </li>
+                            <!-- User Menu Ends -->
+                        </ul>
+                        <!-- Main Menu Ends -->
+                    </div>
+                    <!-- Search Input Starts -->
+                    <div class="site-search hidden-xs">
+                        <div class="search-container">
+                            <input id="search-input" type="text" placeholder="type your keyword and hit enter ...">
+                            <span class="close">×</span>
+                        </div>
+                    </div>
+                    <!-- Search Input Ends -->
+                    <!-- Navigation Menu Ends -->
+                </nav>
+                <!-- Navbar Ends -->
+            </div>
+        </header>
+        <!-- Header Ends -->
+        <!-- Main Slider Section Starts -->
+        <section class="mainslider" id="mainslider">
+            <!-- Slider Hero Starts -->
+            <div class="rev_slider_wrapper fullwidthbanner-container dark-slider" data-alias="vimeo-hero"
+                style="margin:0px auto;background-color:transparent;padding:0px;margin-top:0px;margin-bottom:0px;">
+                <!-- START REVOLUTION SLIDER 5.0.7 fullwidth mode -->
+                <div id="rev_slider_kenburns" class="rev_slider fullwidthabanner" style="display:none;"
+                    data-version="5.0.7">
+                    <ul>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-18" data-transition="zoomin" data-slotamount="7"
+                            data-easein="Power4.easeInOut" data-easeout="Power4.easeInOut" data-masterspeed="2000"
+                            data-thumb="img/revolution-slider/kenburns/thumb1.jpg" data-rotate="0"
+                            data-saveperformance="off" data-title="Ken Burns" data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns1.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-textAlign="['left','left','left','left']" data-elementdelay="0.05"
+                                style="z-index: 5; white-space: nowrap;">Somos FinAnalyzer
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">La mejor herramienta Analitica financiera
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-2" data-transition="zoomin" data-slotamount="default" data-easein="default"
+                            data-easeout="default" data-masterspeed="default"
+                            data-thumb="img/revolution-slider/kenburns/thumb2.jpg" data-rotate="0"
+                            data-fsmasterspeed="300" data-fsslotamount="7" data-saveperformance="off" data-title="Intro"
+                            data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns2.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-elementdelay="0.05" style="z-index: 5; white-space: nowrap;">Somos uno
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">Equipo Analitico
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-3" data-transition="zoomin" data-slotamount="default" data-easein="default"
+                            data-easeout="default" data-masterspeed="default"
+                            data-thumb="img/revolution-slider/kenburns/thumb3.jpg" data-rotate="0"
+                            data-fsmasterspeed="300" data-fsslotamount="7" data-saveperformance="off" data-title="Intro"
+                            data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns3.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-elementdelay="0.05" style="z-index: 5; white-space: nowrap;">Somos el mejor
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">HERRAMIENTA DE ANÁLISIS FINANCIERO
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="tp-static-layers"></div>
+                    <div class="tp-bannertimer tp-bottom" style="visibility: hidden !important;"></div>
+                </div>
+            </div>
+            <!-- END REVOLUTION SLIDER -->
+            <!-- Slider Hero Ends -->
+        </section>
+        <!-- Main Slider Section Ends -->
+        <!-- About Section Starts -->
+        <section id="about" class="about">
+            <!-- Container Starts -->
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>Sobre</span> Nosotros</h1>
+                    <h4>Quiénes Somos</h4>
+                </div>
+                <!-- Main Heading Ends -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-user" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- About Content Starts -->
+                <div class="row about-content">
+                    <div class="col-sm-12 col-md-6 col-lg-6 about-left-side">
+                        <h3 class="title-about">SOMOS <strong>FinAnalyzer</strong></h3>
+                        <hr>
+                        <p>representamos la nueva generación de tecnología financiera en Centroamérica.
+                            Desarrollada en el corazón de Nicaragua, nuestra plataforma es la primera solución local
+                            diseñada específicamente para
+                            simplificar el cálculo y la interpretación de razones financieras </p>
+                        <!-- Tabs Heading Starts -->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#menu1">Misión</a></li>
+                            <li><a data-toggle="tab" href="#menu2">Ventajas</a></li>
+                            <li><a data-toggle="tab" href="#menu3">Garantías</a></li>
+                        </ul>
+                        <!-- Tabs Heading Ends -->
+                        <!-- Tabs Content Starts -->
+                        <div class="tab-content">
+                            <div id="menu1" class="tab-pane fade in active">
+                                <p>Proveer a estudiantes, emprendedores y empresarios nicaragüenses de una herramienta
+                                    digital accesible y potente para el diagnóstico financiero. Buscamos eliminar las
+                                    barreras técnicas del análisis contable,
+                                    permitiendo que cualquier negocio pueda medir su salud financiera y tomar decisiones
+                                    estratégicas con precisión y rapidez.</p>
+                            </div>
+                            <div id="menu2" class="tab-pane fade">
+                                <p>Nos diferenciamos por ser una innovación 100% local, desarrollada por talento de la
+                                    UNI y adaptada a la realidad empresarial de la región. Ofrecemos precisión
+                                    matemática en cada cálculo, seguridad de datos de nivel profesional y una interfaz
+                                    intuitiva que transforma números complejos en reportes claros y accionables.</p>
+                            </div>
+                            <div id="menu3" class="tab-pane fade">
+                                <p>Nuestro compromiso es brindar a estudiantes, auditores y gerentes una infraestructura
+                                    digital robusta, segura y accesible,
+                                    eliminando las barreras técnicas del análisis financiero tradicional.</p>
+                            </div>
+                        </div>
+                        <!-- Tabs Content Ends -->
+                        <a class="custom-button" href="#">Lee mas sobre nosotros</a>
+                    </div>
+                    <div class="col-md-6 col-lg-6 about-right-side">
+                        <div class="full-image-container hovered">
+                            <img class="img-responsive hidden-xs" src="img/about.jpg" alt="">
+                            <div class="full-image-overlay">
+                                <h3>Porque <strong>Escogernos</strong></h3>
+                                <ul class="list-why-choose-us">
+                                    <li>Innovación 100% Nica 🇳🇮</li>
+                                    <li>Precisión Financiera Garantizada</li>
+                                    <li>Seguridad de Datos Blindada</li>
+                                    <li>Análisis en Tiempo Real</li>
+                                    <li>Interfaz Simple e Intuitiva</li>
+                                    <li>& mucho mas ...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- About Content Ends -->
+            </div>
+            <!-- Container Ends -->
+        </section>
+        <!-- About Section Ends -->
+        <!-- Video Section Starts -->
+        <section class="videopromotion">
+            <div class="section-overlay">
+                <!-- Container Starts -->
+                <div class="container">
+                    <!-- Main Heading Starts -->
+                    <div class="text-center top-text">
+                        <h1><span>Video</span> Promo</h1>
+                        <h4>Conoce FinAnalyzer</h4>
+                    </div>
+                    <!-- Main Heading Ends -->
+                    <div class="video-content">
+                        <p class="text-center">¡Mira FinAnalyzer como nunca antes lo habías visto! Mira nuestro nuevo
+                            video
+                            promocional,<br> y descubre todo lo que una membresía de FinAnalyzer puede hacer por ti!</p>
+                        <!-- Video Play Starts -->
+                        <div class="magnific-popup-gallery">
+                            <div class="btn-wrapper text-center"><a class="image-wrap mfp-youtube"
+                                    href="https://www.youtube.com/watch?v=0gv7OC9L2s8"></a></div>
+                        </div>
+                        <!-- Video Play Ends -->
+                    </div>
+                </div>
+                <!-- Container Ends -->
+            </div>
+        </section>
+        <!-- Video Section Ends -->
+        <!-- Services Section Starts -->
+        <section class="services">
+            <!-- Container Starts -->
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>Nuestros</span> Servicios</h1>
+                    <h4>Lo que hacemos</h4>
+                </div>
+                <!-- Main Heading Starts -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-cogs" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- Services Starts -->
+                <div class="row services-box">
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-leaf" data-headline="Soluciones Creativas"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-leaf">
+                            <h2>Soluciones Creativas</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-anchor" data-headline="Servicios Destacados"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-anchor">
+                            <h2>Servicios Destacados</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-comments-o" data-headline="Comparacion"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-comments-o">
+                            <h2>Comparamos tu Rendimiento</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-support" data-headline="Diagnosticamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <div class="services-box-item-content fa fa-support">
+                            <h2>Diagnosticamos tu Salud Financiera</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-cogs" data-headline="Automatizamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-cogs">
+                            <h2>Automatizamos Reportes Complejos</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-file-pdf-o" data-headline="Resguardamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-file-pdf-o">
+                            <h2>Resguardamos tu Historial</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in
+                                voluptate velit esse cillum dolore eu.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                </div>
+                <!-- Services Ends -->
+            </div>
+        </section>
+        <!-- Services Section Ends -->
+        <!-- Pricing Starts -->
+        <section class="pricing">
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>paquetes</span> asequibles</h1>
+                    <h4>nuestros precios</h4>
+                </div>
+                <!-- Main Heading Starts -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-dollar" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- Section Content Starts -->
+                <div class="row pricing-tables-content">
+                    <div class="pricing-container">
+                        <!-- Pricing Switcher Starts -->
+                        <div class="pricing-switcher">
+                            <p>
+                                <input type="radio" name="switch" value="monthly" id="monthly-1" checked>
+                                <label for="monthly-1">MENSUAL</label>
+                                <input type="radio" name="switch" value="yearly" id="yearly-1">
+                                <label for="yearly-1">ANUAL</label>
+                                <span class="switch"></span>
+                            </p>
+                        </div>
+                        <!-- Pricing Switcher Ends -->
+                        <!-- Pricing Tables Starts -->
+                        <ul class="pricing-list bounce-invert">
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #1 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <header class="pricing-header">
+                                            <h2>bronze</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">100</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>1 GB</em> disk space</li>
+                                                <li><em>2</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #1 Ends -->
+                                    <!-- Yearly Pricing Table #1 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <header class="pricing-header">
+                                            <h2>bronze</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">360</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>10 GB</em> disk space</li>
+                                                <li><em>100</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #1 Ends -->
+                                </ul>
+                            </li>
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #2 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <header class="pricing-header">
+                                            <h2>silver</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">300</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>3 GB</em> disk space</li>
+                                                <li><em>5</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #2 Ends -->
+                                    <!-- Yearly Pricing Table #2 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <header class="pricing-header">
+                                            <h2>silver</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">599</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>100 GB</em> disk space</li>
+                                                <li><em>unlimited</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #2 Ends -->
+                                </ul>
+                            </li>
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #3 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <div class="badge-popular">
+                                            <span class="popular">POPULAR</span>
+                                        </div>
+                                        <header class="pricing-header">
+                                            <h2>gold</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">500</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>5 GB</em> disk space</li>
+                                                <li><em>10</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #3 Ends -->
+                                    <!-- Yearly Pricing Table #3 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <div class="badge-popular">
+                                            <span class="popular">POPULAR</span>
+                                        </div>
+                                        <header class="pricing-header">
+                                            <h2>gold</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">899</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>unlimited</em> disk space</li>
+                                                <li><em>unlimited</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #3 Ends -->
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Pricing Ends -->
+        <!-- Call To Action Section Starts -->
+        <section class="call-to-action">
+            <div class="section-overlay">
+                <!-- Container Starts -->
+                <div class="container">
+                    <!-- Main Heading Starts -->
+                    <div class="text-center top-text">
+                        <h1><span>crea una</span> cuenta</h1>
+                        <h4>comienza absolutamente gratis</h4>
+                    </div>
+                    <!-- Main Heading Starts -->
+                    <!-- Call To Action Starts -->
+                    <div class="call-to-action-content">
+                        <ul>
+                            <li>No se requiere tarjeta de crédito</li>
+                            <li>Análisis en Tiempo Real</li>
+                            <li>Precisión Financiera</li>
+                            <li>Boletín diario</li>
+                        </ul>
+                        <a class="custom-button" href="register.html">regístrate ahora</a>
+                    </div>
+                    <!-- Call To Action Ends -->
+                </div>
+                <!-- Container Ends -->
+            </div>
+        </section>
+        <!-- facts Section Ends -->
+        <!-- Footer Section Starts -->
+        <footer class="footer top-logos">
+            <!-- Footer Top Area Starts -->
+            <div class="container top-footer">
+                <div class="row">
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-2">
+                        <h4>FinAnalyzer</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><a href="index-kenburns.html">Inicio</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-2">
+                        <h4>Soporte</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><a href="login/registro.html">Registrarse</a></li>
+                                <li><a href="login/login.html">Iniciar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <h4>Contactanos</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><span><i class="fa fa-envelope-open"></i> Finanalyzer@gmail.com</span></li>
+                                <li><span><i class="fa fa-phone"></i> 5555-2222</span></li>
+                                <li><span><i class="fa fa-map-marker"></i> Managua Nicaragua</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-12 col-md-4">
+                        <hr>
+                        <!-- Social Media Links Starts -->
+                        <div class="social-icons">
+                            <ul class="social">
+                                <li>
+                                    <a class="twitter" href="#" title="twitter"></a>
+                                </li>
+                                <li>
+                                    <a class="facebook" href="#" title="facebook"></a>
+                                </li>
+                                <li>
+                                    <a class="google" href="#" title="google"></a>
+                                </li>
+                                <li>
+                                    <a class="linkedin" href="#" title="linkedin"></a>
+                                </li>
+                                <li>
+                                    <a class="youtube" href="#" title="youtube"></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Social Media Links Ends -->
+                    </div>
+                    <!-- Footer Widget Ends -->
+                </div>
+                <!-- Footer Bottom Area Starts -->
+                <div class="bottom-footer">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- Copyright Text Starts -->
+                            <p class="text-center"><a href="#">FinAnalyzer</a></p>
+                            <!-- Copyright Text Ends -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Bottom Area Ends -->
+            </div>
+            <!-- Footer Top Area Ends -->
+
+        </footer>
+        <!-- Footer Section Ends -->
+        <!-- Back To Top Starts -->
+        <div id="back-top-wrapper">
+            <p id="back-top">
+                <a href="#top"><span></span></a>
+            </p>
+        </div>
+        <!-- Back To Top Ends -->
+    </div>
+    <!-- Wrapper Ends -->
+
+    <!-- Template JS Files -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/plugins/jquery.easing.1.3.js"></script>
+    <script src="js/plugins/bootstrap.min.js"></script>
+    <script src="js/plugins/jquery.bxslider.min.js"></script>
+    <script src="js/plugins/jquery.filterizr.js"></script>
+    <script src="js/plugins/jquery.magnific-popup.min.js"></script>
+
+    <!-- Revolution Slider Main JS Files -->
+    <script src="js/plugins/revolution/js/jquery.themepunch.tools.min.js"></script>
+    <script src="js/plugins/revolution/js/jquery.themepunch.revolution.min.js"></script>
+
+    <!-- Revolution Slider Extensions -->
+
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+    <!-- Live Style Switcher JS File - only demo -->
+    <script src="js/styleswitcher.js"></script>
+
+    <!-- Main JS Initialization File -->
+    <script src="js/custom.js"></script>
+
+    <script>
+        // 1. CONFIGURACIÓN (Pega tus claves aquí)
+        const supabaseUrl = 'https://tggsqzdjfyfpxduinaio.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZ3NxemRqZnlmcHhkdWluYWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMTIzMTYsImV4cCI6MjA3OTU4ODMxNn0.32UELAO2dC2merWnv0VgKVzE8SJy0wI-cp9X2JljnCw';
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. CONTROLADOR DEL NAVBAR
+        document.addEventListener('DOMContentLoaded', async () => {
+            const menuContainer = document.getElementById('userMenuContainer');
+
+            // A. Verificar Sesión Real
+            const { data: { session } } = await client.auth.getSession();
+
+            // B. Verificar Modo Espectador
+            const esEspectador = localStorage.getItem('modo_espectador') === 'true';
+
+            if (session) {
+                // --- CASO 1: USUARIO LOGUEADO ---
+                const email = session.user.email;
+                const inicial = email.charAt(0).toUpperCase();
+
+                // 1. Inyectamos el HTML
+                menuContainer.innerHTML = `
+        <a href="#" id="btnBolitaUsuario" class="user-avatar-btn">
+            <div class="avatar-text">${inicial}</div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableUsuario">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge"><i class="fa fa-user-circle"></i> Usuario</span>
+                    <div class="user-email-text">${email}</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-trophy"></i> Ranking</a></li>
+            <li><a href="documentacion.html"><i class="fa fa-book"></i> Documentación</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="logout text-danger" href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
+        </ul>
+        `;
+
+                // 2. Agregar toggle al botón
+                const btnBolita = document.getElementById('btnBolitaUsuario');
+                if (btnBolita) {
+                    btnBolita.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('userMenuLi').classList.toggle('open');
+                    });
+                }
+
+            } else if (esEspectador) {
+                // --- CASO 2: ESPECTADOR ---
+                menuContainer.innerHTML = `
+        <a href="#" id="btnBolitaEspectador" class="user-avatar-btn" style="border-color: #999;">
+            <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableEspectador">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
+                    <div class="user-email-text">Visualización Limitada</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-eye"></i> Ver Ranking</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="text-primary" href="Login/login.html" style="font-weight:bold;"><i class="fa fa-star"></i> Crear Cuenta</a></li>
+            <li><a class="logout" href="#" onclick="logout()"><i class="fa fa-times"></i> Salir</a></li>
+        </ul>
+        `;
+
+                // Agregar toggle al botón de espectador
+                const btnEspectador = document.getElementById('btnBolitaEspectador');
+                if (btnEspectador) {
+                    btnEspectador.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('userMenuLi').classList.toggle('open');
+                    });
+                }
+
+            } else {
+                // --- CASO 3: VISITANTE ---
+                menuContainer.innerHTML = `
+        <a href="Login/login.html" class="btn btn-primary">
+            <i class="fa fa-user"></i> Acceder
+        </a>
+        `;
+            }
+
+            // Event listener global para cerrar menú al hacer click fuera (solo se agrega una vez)
+            document.addEventListener('click', (e) => {
+                const userMenuLi = document.getElementById('userMenuLi');
+                if (userMenuLi && userMenuLi.classList.contains('open') && !userMenuLi.contains(e.target)) {
+                    userMenuLi.classList.remove('open');
+                }
+            });
+        });
+
+        // 3. FUNCIÓN DE SALIDA
+        async function logout() {
+            await client.auth.signOut();
+            localStorage.removeItem('modo_espectador');
+            window.location.reload(); // Recargar para mostrar botón de acceder
+        }
+    </script>
+</body>
+
+
+<!-- index-kenburns13:00  -->
+
+</html>

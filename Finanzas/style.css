@@ -1,0 +1,357 @@
+.navbar {
+    background: white !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    /* Forzamos la altura y el espaciado */
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    min-height: 80px !important; /* Altura mínima fija */
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem !important; /* Tamaño de fuente fijo */
+    color: var(--primary) !important;
+    padding: 0 !important; /* Quitar padding extra de bootstrap */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    font-size: 1.8rem; /* Tamaño del ícono del logo */
+    margin-right: 10px;
+}
+
+.nav-link {
+    font-weight: 500;
+    font-size: 1rem !important; /* Tamaño de letra fijo */
+    margin: 0 5px;
+    padding: 10px 15px !important; /* Relleno del botón */
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: var(--primary) !important;
+    display: flex;
+    align-items: center;
+}
+
+.nav-link i {
+    margin-right: 8px; /* Espacio entre icono y texto */
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(52, 152, 219, 0.1); /* Azul clarito del ranking */
+    color: var(--accent) !important;
+}
+
+
+/* Asegura que el contenedor se centre verticalmente igual en ambos */
+.navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- ESTILOS DEL PERFIL DE USUARIO (BOLITA) --- */
+.user-avatar-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.user-avatar-btn:hover {
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+    transform: translateY(-2px);
+}
+
+.avatar-text {
+    font-weight: 700;
+    color: var(--primary); /* Color oscuro del ranking */
+    font-size: 1.1rem;
+}
+
+/* Menú Desplegable */
+.dropdown-menu-user {
+    width: auto;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    min-width: 240px;
+    margin-top: 10px;
+    right: 0;
+    left: auto;
+}
+
+/* Cabecera del usuario dentro del menú */
+.user-info-header {
+    padding: 10px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.user-role-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.user-email-text {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 500;
+    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Items del menú */
+.dropdown-item {
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 0.95rem;
+    color: #2c3e50; /* Color texto normal */
+}
+
+.dropdown-item:hover {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--accent);
+}
+
+.dropdown-item.logout:hover {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+/* Animación */
+.animate { animation-duration: 0.3s; animation-fill-mode: both; }
+.slideIn { animation-name: slideIn; }
+@keyframes slideIn {
+    from { transform: translateY(15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+:root {
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --accent: #4895ef;
+    --dark: #1e1e2c;
+    --light: #f8f9fa;
+    --success: #4cc9f0;
+    --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 15px 40px rgba(67, 97, 238, 0.15);
+}
+
+ body {
+     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+     background: #f8f9fa;
+     color: #2c3e50;
+     line-height: 1.6;
+ }
+
+/* Hero Section */
+.doc-hero {
+    background: var(--gradient);
+    color: white;
+    padding: 80px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.doc-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+    background-size: cover;
+}
+
+/* Sidebar Navigation */
+.doc-sidebar {
+    position: sticky;
+    top: 100px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.doc-nav-item {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.doc-nav-item:hover,
+.doc-nav-item.active {
+    background: rgba(67, 97, 238, 0.1);
+    border-left: 3px solid var(--primary);
+    color: var(--primary);
+}
+
+/* Content Sections */
+.doc-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 40px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.doc-section:hover {
+    transform: translateY(-5px);
+}
+
+.section-title {
+    position: relative;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: var(--gradient);
+    border-radius: 2px;
+}
+
+/* Cards */
+.concept-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.concept-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.concept-card-header {
+    background: var(--gradient);
+    color: white;
+    padding: 20px;
+    border-bottom: none;
+}
+
+.ratio-card {
+    border-left: 4px solid var(--primary);
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.ratio-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.ratio-icon {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+/* Tables */
+.ratio-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.ratio-table th {
+    background: var(--gradient);
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+.ratio-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.ratio-table tr:hover {
+    background: rgba(67, 97, 238, 0.05);
+}
+
+/* Interactive Elements */
+.importance-badge {
+    background: rgba(76, 201, 240, 0.1);
+    color: var(--success);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.formula-box {
+    background: #f8f9fa;
+    border-left: 4px solid var(--primary);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+
+/* Footer */
+footer {
+    background: var(--dark);
+    color: white;
+    margin-top: 50px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .doc-hero {
+        padding: 60px 0 40px;
+    }
+
+    .doc-section {
+        padding: 25px;
+    }
+
+    .doc-sidebar {
+        margin-bottom: 20px;
+        position: relative;
+        top: 0;
+    }
+}
