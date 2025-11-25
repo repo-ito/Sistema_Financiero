@@ -37,9 +37,10 @@
         
         /* Navigation */
         .navbar {
-            background: white !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
         
@@ -54,12 +55,11 @@
             margin: 0 0.5rem;
             border-radius: 8px;
             transition: all 0.3s ease;
-            color: var(--primary) !important;
         }
         
         .nav-link:hover, .nav-link.active {
-            background: rgba(52, 152, 219, 0.1);
-            color: var(--accent) !important;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary) !important;
         }
         
         /* Hero Section */
@@ -372,32 +372,21 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-chart-line me-2"></i>FinAnalyzer
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="index.html">
-                        <i class="fas fa-home me-1"></i> Inicio
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="ranking.html">
-                        <i class="fas fa-chart-bar me-1"></i> Análisis Comparativo
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="documentacion.html">
-                        <i class="fas fa-book me-1"></i> Documentación
-                    </a>
-                </li>
-            </ul>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="ranking.html"><i class="fas fa-home me-1"></i> Inicio</a>
+                <a class="nav-link" href="ranking.html"><i class="fas fa-chart-bar me-1"></i> Análisis Comparativo</a>
+                <a class="nav-link" href="index.html"><i class="fas fa-book me-1"></i> Documentación</a>
+                <a class="nav-link" href="#"><i class="fas fa-envelope me-1"></i> Contacto</a>
+            </div>
         </div>
     </div>
 </nav>
