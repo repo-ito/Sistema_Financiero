@@ -1,0 +1,545 @@
+ :root {
+     --primary: #2c3e50;
+     --secondary: #34495e;
+     --accent: #3498db;
+     --success: #27ae60;
+     --warning: #f39c12;
+     --danger: #e74c3c;
+     --light: #ecf0f1;
+     --dark: #2c3e50;
+     --gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+     --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+     --shadow-hover: 0 15px 40px rgba(44, 62, 80, 0.15);
+ }
+
+ body {
+     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+     background: #f8f9fa;
+     color: #2c3e50;
+     line-height: 1.6;
+ }
+
+ /* Navigation */
+ .navbar {
+     background: white !important;
+     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+     /* Forzamos la altura y el espaciado */
+     padding-top: 15px !important;
+     padding-bottom: 15px !important;
+     min-height: 80px !important;
+     /* Altura mínima fija */
+     transition: all 0.3s ease;
+ }
+
+ .navbar-brand {
+     font-weight: 700;
+     font-size: 1.5rem !important;
+     /* Tamaño de fuente fijo */
+     color: var(--primary) !important;
+     padding: 0 !important;
+     /* Quitar padding extra de bootstrap */
+     display: flex;
+     align-items: center;
+ }
+
+ .navbar-brand i {
+     font-size: 1.8rem;
+     /* Tamaño del ícono del logo */
+     margin-right: 10px;
+ }
+
+ .nav-link {
+     font-weight: 500;
+     font-size: 1rem !important;
+     /* Tamaño de letra fijo */
+     margin: 0 5px;
+     padding: 10px 15px !important;
+     /* Relleno del botón */
+     border-radius: 8px;
+     transition: all 0.3s ease;
+     color: var(--primary) !important;
+     display: flex;
+     align-items: center;
+ }
+
+ .nav-link i {
+     margin-right: 8px;
+     /* Espacio entre icono y texto */
+ }
+
+ .nav-link:hover,
+ .nav-link.active {
+     background: rgba(52, 152, 219, 0.1);
+     /* Azul clarito del ranking */
+     color: var(--accent) !important;
+ }
+
+
+ /* Asegura que el contenedor se centre verticalmente igual en ambos */
+ .navbar .container {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+ }
+
+ /* --- ESTILOS DEL PERFIL DE USUARIO (BOLITA) --- */
+ .user-avatar-btn {
+     width: 40px;
+     height: 40px;
+     border-radius: 50%;
+     border: 2px solid var(--accent);
+     background: white;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     cursor: pointer;
+     transition: 0.3s;
+     text-decoration: none;
+ }
+
+ .user-avatar-btn:hover {
+     box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+     transform: translateY(-2px);
+ }
+
+ .avatar-text {
+     font-weight: 700;
+     color: #4361ee;
+     font-size: 1.1rem;
+ }
+
+ .dropdown-menu-user {
+     width: auto;
+     border: none;
+     border-radius: 12px;
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+     padding: 10px;
+     min-width: 240px;
+     margin-top: 10px;
+     right: 0;
+     left: auto;
+ }
+
+ .user-info-header {
+     padding: 10px 15px;
+     background: #f8f9fa;
+     border-radius: 8px;
+     margin-bottom: 10px;
+ }
+
+ .user-role-badge {
+     font-size: 0.7rem;
+     text-transform: uppercase;
+     letter-spacing: 1px;
+     font-weight: 800;
+     color: var(--accent);
+     display: block;
+     margin-bottom: 2px;
+ }
+
+ .user-email-text {
+     font-size: 0.85rem;
+     color: #555;
+     font-weight: 500;
+     word-break: break-all;
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+ }
+
+ .dropdown-item {
+     border-radius: 6px;
+     padding: 8px 15px;
+     font-size: 0.95rem;
+ }
+
+ .dropdown-item:hover {
+     background: rgba(52, 152, 219, 0.1);
+     color: var(--primary);
+ }
+
+ .dropdown-item.logout:hover {
+     background: rgba(231, 76, 60, 0.1);
+     color: #e74c3c;
+ }
+
+ /* Animación suave */
+ .animate {
+     animation-duration: 0.3s;
+     animation-fill-mode: both;
+ }
+
+ .slideIn {
+     animation-name: slideIn;
+ }
+
+ @keyframes slideIn {
+     from {
+         transform: translateY(15px);
+         opacity: 0;
+     }
+
+     to {
+         transform: translateY(0);
+         opacity: 1;
+     }
+ }
+
+ /* Hero Section */
+ .hero {
+     height: 70vh;
+     background: var(--gradient);
+     color: white;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     text-align: center;
+     position: relative;
+     overflow: hidden;
+ }
+
+ .hero::before {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+     background-size: cover;
+ }
+
+ .hero h1 {
+     font-size: 3.5rem;
+     font-weight: 700;
+     margin-bottom: 1.5rem;
+ }
+
+ .hero p {
+     font-size: 1.3rem;
+     max-width: 600px;
+     margin: 0 auto 2rem;
+ }
+
+ .btn-main {
+     background: white;
+     color: var(--primary);
+     padding: 15px 40px;
+     border-radius: 50px;
+     font-size: 1.2rem;
+     font-weight: 600;
+     transition: all 0.3s ease;
+     border: none;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+ }
+
+ .btn-main:hover {
+     transform: translateY(-3px);
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+     color: var(--primary);
+ }
+
+ /* Features Section */
+ .features-section {
+     padding: 80px 0;
+ }
+
+ .card-feature {
+     background: white;
+     border-radius: 16px;
+     padding: 30px;
+     box-shadow: var(--shadow);
+     transition: all 0.4s ease;
+     cursor: pointer;
+     height: 100%;
+     border: none;
+     text-align: center;
+ }
+
+ .card-feature:hover {
+     transform: translateY(-10px);
+     box-shadow: var(--shadow-hover);
+ }
+
+ .feature-icon {
+     font-size: 3rem;
+     margin-bottom: 1.5rem;
+     color: var(--accent);
+ }
+
+ /* Data Section */
+ .data-section {
+     background: var(--primary);
+     color: white;
+     padding: 60px 0;
+ }
+
+ .data-header {
+     text-align: center;
+     margin-bottom: 3rem;
+ }
+
+ .data-header h2 {
+     font-size: 2.5rem;
+     font-weight: 700;
+     margin-bottom: 1rem;
+ }
+
+ .company-btn {
+     background: transparent;
+     border: 2px solid rgba(255, 255, 255, 0.3);
+     color: white;
+     padding: 12px 25px;
+     border-radius: 10px;
+     font-weight: 500;
+     transition: all 0.3s ease;
+     margin: 0 10px 15px;
+ }
+
+ .company-btn:hover {
+     background: rgba(255, 255, 255, 0.1);
+     border-color: rgba(255, 255, 255, 0.5);
+     transform: translateY(-2px);
+ }
+
+ /* Analysis Section */
+ .analysis-section {
+     padding: 80px 0;
+ }
+
+ .analysis-table {
+     background: white;
+     border-radius: 16px;
+     overflow: hidden;
+     box-shadow: var(--shadow);
+     margin-bottom: 30px;
+ }
+
+ .analysis-table thead {
+     background: var(--gradient);
+     color: white;
+ }
+
+ .analysis-table th {
+     padding: 20px 15px;
+     font-weight: 600;
+     border: none;
+ }
+
+ .analysis-table td {
+     padding: 15px;
+     border-bottom: 1px solid #eee;
+     vertical-align: middle;
+ }
+
+ .analysis-table tr:hover {
+     background: rgba(52, 152, 219, 0.05);
+ }
+
+ .ratio-link {
+     color: var(--primary);
+     text-decoration: none;
+     font-weight: 500;
+     transition: all 0.3s ease;
+     cursor: pointer;
+ }
+
+ .ratio-link:hover {
+     color: var(--accent);
+ }
+
+ /* Sector Badges */
+ .sector-badge {
+     font-size: 0.75rem;
+     padding: 4px 8px;
+     border-radius: 12px;
+     font-weight: 600;
+     margin-left: 8px;
+ }
+
+ .sector-primario {
+     background: rgba(46, 204, 113, 0.2);
+     color: #27ae60;
+     border: 1px solid rgba(46, 204, 113, 0.3);
+ }
+
+ .sector-secundario {
+     background: rgba(52, 152, 219, 0.2);
+     color: #2980b9;
+     border: 1px solid rgba(52, 152, 219, 0.3);
+ }
+
+ .sector-terciario {
+     background: rgba(155, 89, 182, 0.2);
+     color: #8e44ad;
+     border: 1px solid rgba(155, 89, 182, 0.3);
+ }
+
+ /* Estilos para subsectores específicos */
+ .sector-ganaderia {
+     background: rgba(46, 204, 113, 0.2);
+     color: #27ae60;
+ }
+
+ .sector-pesca {
+     background: rgba(41, 128, 185, 0.2);
+     color: #2980b9;
+ }
+
+ .sector-mineria {
+     background: rgba(230, 126, 34, 0.2);
+     color: #d35400;
+ }
+
+ .sector-explotacion_forestal {
+     background: rgba(39, 174, 96, 0.2);
+     color: #229954;
+ }
+
+ .sector-manufactura_ligera {
+     background: rgba(52, 152, 219, 0.2);
+     color: #2980b9;
+ }
+
+ .sector-construccion {
+     background: rgba(243, 156, 18, 0.2);
+     color: #f39c12;
+ }
+
+ .sector-artesania {
+     background: rgba(155, 89, 182, 0.2);
+     color: #8e44ad;
+ }
+
+ .sector-produccion_energia {
+     background: rgba(231, 76, 60, 0.2);
+     color: #c0392b;
+ }
+
+ .sector-comercio {
+     background: rgba(155, 89, 182, 0.2);
+     color: #8e44ad;
+ }
+
+ .sector-salud {
+     background: rgba(231, 76, 60, 0.2);
+     color: #c0392b;
+ }
+
+ .sector-educacion {
+     background: rgba(52, 152, 219, 0.2);
+     color: #2980b9;
+ }
+
+ .sector-transporte {
+     background: rgba(241, 196, 15, 0.2);
+     color: #f39c12;
+ }
+
+ .sector-servicios_financieros {
+     background: rgba(149, 165, 166, 0.2);
+     color: #7f8c8d;
+ }
+
+ /* Buttons */
+ .btn-ranking {
+     background: var(--success);
+     color: white;
+     padding: 15px 40px;
+     border-radius: 10px;
+     font-size: 1.2rem;
+     font-weight: 600;
+     transition: all 0.3s ease;
+     border: none;
+     display: block;
+     margin: 0 auto;
+     width: 200px;
+ }
+
+ .btn-ranking:hover {
+     background: #219653;
+     transform: translateY(-3px);
+     box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+ }
+
+ /* Modals */
+ .modal-content {
+     border-radius: 16px;
+     border: none;
+     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+ }
+
+ .modal-header {
+     background: var(--gradient);
+     color: white;
+     border-radius: 16px 16px 0 0;
+     padding: 20px 25px;
+     border-bottom: none;
+ }
+
+ .modal-title {
+     font-weight: 600;
+ }
+
+ .btn-close {
+     filter: invert(1);
+ }
+
+ .form-control,
+ .form-select {
+     border-radius: 10px;
+     padding: 12px 15px;
+     border: 1px solid #ddd;
+     transition: all 0.3s ease;
+ }
+
+ .form-control:focus,
+ .form-select:focus {
+     border-color: var(--accent);
+     box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+ }
+
+ /* Sector Info */
+ .sector-info {
+     background: #f8f9fa;
+     border-radius: 10px;
+     padding: 15px;
+     margin-bottom: 20px;
+     border-left: 4px solid var(--accent);
+ }
+
+ .sector-info h6 {
+     color: var(--primary);
+     margin-bottom: 5px;
+ }
+
+ .sector-info p {
+     font-size: 0.9rem;
+     margin-bottom: 0;
+     color: #666;
+ }
+
+ /* Footer */
+ footer {
+     background: var(--dark);
+     color: white;
+     padding: 40px 0;
+ }
+
+ /* Responsive */
+ @media (max-width: 768px) {
+     .hero h1 {
+         font-size: 2.5rem;
+     }
+
+     .hero p {
+         font-size: 1.1rem;
+     }
+
+     .company-btn {
+         margin: 0 5px 10px;
+         padding: 10px 15px;
+         font-size: 0.9rem;
+     }
+ }

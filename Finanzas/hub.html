@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - FinAnalyzer Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Hero del Hub */
+        .hub-hero {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 100px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hub-hero h1 {
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .nicaragua-badge {
+            background: linear-gradient(90deg, #0067c6 0%, #ffffff 50%, #0067c6 100%); /* Azul y Blanco Nica */
+            height: 4px;
+            width: 100px;
+            margin: 0 auto 30px;
+            border-radius: 2px;
+        }
+
+        /* Tarjetas de Misión/Visión */
+        .mv-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            height: 100%;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mv-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mv-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--accent);
+            margin-bottom: 25px;
+        }
+
+        /* Sección de Confianza */
+        .trust-section {
+            background: var(--primary);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .trust-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .trust-icon {
+            font-size: 40px;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        /* Bandera sutil */
+        .nica-flag-bg {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            font-size: 300px;
+            opacity: 0.03;
+            color: var(--primary);
+            transform: rotate(-15deg);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto align-items-center">
+                    <a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i> Inicio</a>
+                    <a class="nav-link" href="ranking.html"><i class="fas fa-chart-bar me-1"></i> Análisis Comparativo</a>
+                    <a class="nav-link active" href="hub.html"><i class="fas fa-building me-1"></i> Nosotros</a>
+                    <a class="nav-link" href="documentacion.html"><i class="fas fa-book me-1"></i> Documentación</a>
+
+                    <span class="mx-2"></span>
+
+                    <div id="userMenuContainer" class="dropdown ms-2">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hub-hero">
+        <i class="fas fa-map-marked-alt nica-flag-bg"></i> <div class="container position-relative">
+            <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">
+                <i class="fas fa-flag me-2"></i>Orgullo Nicaragüense 🇳🇮
+            </span>
+            <h1 class="display-4">El Primer Hub de Análisis<br>Financiero de Nicaragua</h1>
+            <div class="nicaragua-badge"></div>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                Empoderando a las empresas locales con tecnología de clase mundial. 
+                Transformamos datos complejos en decisiones estratégicas simples.
+            </p>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="mv-card">
+                    <div class="mv-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Nuestra Misión</h3>
+                    <p class="text-muted mt-3">
+                        Proveer a estudiantes, emprendedores y empresarios nicaragüenses de una herramienta digital accesible y potente para el diagnóstico financiero. Queremos eliminar la barrera técnica del análisis contable, permitiendo que cualquier negocio pueda medir su salud financiera con precisión y rapidez.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mv-card" style="border-top-color: var(--success);">
+                    <div class="mv-icon" style="background: rgba(39, 174, 96, 0.1); color: var(--success);">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Nuestra Visión</h3>
+                    <p class="text-muted mt-3">
+                        Convertirnos en el estándar de referencia para el análisis financiero empresarial en Centroamérica para el año 2030. Aspiramos a crear un ecosistema donde la toma de decisiones basada en datos sea la norma, impulsando así el crecimiento económico y la competitividad de la región.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">¿Por qué confiar en FinAnalyzer?</h2>
+                <p class="opacity-75">Más que software, somos tu aliado estratégico.</p>
+            </div>
+            <div class="row">
+                <div class="col-md-4 trust-item">
+                    <div class="trust-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Seguridad de Datos</h4>
+                    <p class="small opacity-75">Tu información financiera está protegida con los más altos estándares de encriptación.</p>
+                </div>
+                <div class="col-md-4 trust-item">
+                    <div class="trust-icon"><i class="fas fa-calculator"></i></div>
+                    <h4>Precisión Matemática</h4>
+                    <p class="small opacity-75">Algoritmos validados por expertos financieros para garantizar resultados exactos.</p>
+                </div>
+                <div class="col-md-4 trust-item">
+                    <div class="trust-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h4>Innovación Local</h4>
+                    <p class="small opacity-75">Desarrollado por ingenieros de la UNI, adaptado a la realidad empresarial de nuestro país.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 text-center bg-white">
+        <div class="container">
+            <h3 class="mb-4 text-dark fw-bold">¿Listo para optimizar tus finanzas?</h3>
+            <a href="Login/login.html" class="btn btn-primary btn-lg rounded-pill px-5 shadow">
+                Comenzar Análisis Gratis <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4 text-center mt-auto">
+        <div class="container">
+            <p class="mb-0">© 2025 FinAnalyzer Pro - Nicaragua 🇳🇮</p>
+            <p class="mb-0 small text-muted">Ingeniería de Sistemas - UNI</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // 1. CONFIGURACIÓN
+        const supabaseUrl = 'https://tggsqzdjfyfpxduinaio.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZ3NxemRqZnlmcHhkdWluYWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMTIzMTYsImV4cCI6MjA3OTU4ODMxNn0.32UELAO2dC2merWnv0VgKVzE8SJy0wI-cp9X2JljnCw';
+        const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 2. CONTROLADOR DEL NAVBAR (Copiado de index.html para consistencia)
+        document.addEventListener('DOMContentLoaded', async () => {
+            const menuContainer = document.getElementById('userMenuContainer');
+            const { data: { session } } = await client.auth.getSession();
+            const esEspectador = localStorage.getItem('modo_espectador') === 'true';
+
+            if (session) {
+                const email = session.user.email;
+                const inicial = email.charAt(0).toUpperCase();
+                menuContainer.innerHTML = `
+                    <a href="#" class="user-avatar-btn dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <div class="avatar-text">${inicial}</div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user animate slideIn">
+                        <li>
+                            <div class="user-info-header">
+                                <span class="user-role-badge"><i class="fas fa-building me-1"></i> Empresa</span>
+                                <div class="user-email-text">${email}</div>
+                            </div>
+                        </li>
+                        <li><a class="dropdown-item" href="ranking.html"><i class="fas fa-chart-line me-2"></i>Ir al Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item logout text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
+                `;
+            } else if (esEspectador) {
+                menuContainer.innerHTML = `
+                    <a href="#" class="user-avatar-btn dropdown-toggle hide-arrow" data-bs-toggle="dropdown" style="border-color: #999;">
+                        <div class="avatar-text" style="color: #666;"><i class="fas fa-user-secret"></i></div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user animate slideIn">
+                        <li>
+                            <div class="user-info-header">
+                                <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
+                                <div class="user-email-text">Visualización Limitada</div>
+                            </div>
+                        </li>
+                        <li><a class="dropdown-item" href="ranking.html"><i class="fas fa-chart-bar me-2"></i>Ver Ranking</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-primary fw-bold" href="Login/login.html"><i class="fas fa-star me-2"></i>Crear Cuenta</a></li>
+                        <li><a class="dropdown-item logout" href="#" onclick="logout()"><i class="fas fa-times me-2"></i>Salir</a></li>
+                    </ul>
+                `;
+            } else {
+                menuContainer.innerHTML = `
+                    <a href="Login/login.html" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                        <i class="fas fa-sign-in-alt me-2"></i>Acceder
+                    </a>
+                `;
+            }
+        });
+
+        async function logout() {
+            await client.auth.signOut();
+            localStorage.removeItem('modo_espectador');
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
