@@ -1,648 +1,1199 @@
-<!DOCTYPE html>
-<html lang="es">
+﻿<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentación - Razones Financieras</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>FinAnalyzer Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.png">
+
+    <!-- Template CSS Files -->
+    <link rel="stylesheet" type="text/css" href="css/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/magnific-popup.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/css/skins/yellow.css" />
+
+    <!-- Revolution Slider CSS Files -->
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/settings.css" />
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/layers.css" />
+    <link rel="stylesheet" type="text/css" href="js/plugins/revolution/css/navigation.css" />
+
+    <!-- Template JS Files -->
+    <script src="js/modernizr.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
+        /* --- ESTILOS DEL PERFIL DE USUARIO (BOLITA) --- */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
-            --accent: #4895ef;
-            --dark: #1e1e2c;
-            --light: #f8f9fa;
-            --success: #4cc9f0;
-            --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
-            --shadow-hover: 0 15px 40px rgba(67, 97, 238, 0.15);
+            --accent: #3498db;
         }
-        
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-            background: #f8fafc;
+
+        /* Container del menú de usuario - previene herencia de estilos del navbar */
+        #userMenuLi {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 0 !important;
+            position: relative !important;
+            vertical-align: middle !important;
+            height: auto !important;
         }
-        
-        /* Navigation */
-        .navbar {
-            padding: 1rem 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            background: rgba(255,255,255,0.95) !important;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+
+        /* Evitar que el li herede estilos de hover del navbar */
+        #userMenuLi:hover,
+        #userMenuLi.active,
+        #userMenuLi:hover::after,
+        #userMenuLi.active::after,
+        #userMenuLi > a::after {
+            background: none !important;
+            content: none !important;
         }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary) !important;
-        }
-        
-        .nav-link {
-            font-weight: 500;
-            margin: 0 0.5rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary) !important;
-        }
-        
-        /* Hero Section */
-        .doc-hero {
-            background: var(--gradient);
-            color: white;
-            padding: 80px 0 60px;
+
+        #userMenuContainer {
+            display: flex;
+            align-items: center;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .doc-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
-            background-size: cover;
         }
-        
-        /* Sidebar Navigation */
-        .doc-sidebar {
-            position: sticky;
-            top: 100px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .doc-nav-item {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
+
+        /* Botón Avatar - dimensiones fijas para evitar estiramiento */
+        .user-avatar-btn {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            max-width: 40px !important;
+            max-height: 40px !important;
+            border-radius: 50% !important;
+            border: 2px solid var(--accent) !important;
+            background: white !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            transition: box-shadow 0.3s, border-color 0.3s !important;
+            text-decoration: none !important;
+            margin: 0 10px !important;
+            padding: 0 !important;
+            flex-shrink: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            line-height: 1 !important;
         }
-        
-        .doc-nav-item:hover, .doc-nav-item.active {
-            background: rgba(67, 97, 238, 0.1);
-            border-left: 3px solid var(--primary);
-            color: var(--primary);
+
+        .user-avatar-btn:hover {
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            text-decoration: none !important;
         }
-        
-        /* Content Sections */
-        .doc-section {
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            padding: 40px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
+
+        /* Evitar que el hover agregue línea debajo */
+        #userMenuLi:hover .user-avatar-btn::after,
+        #userMenuLi.active .user-avatar-btn::after,
+        .user-avatar-btn::after {
+            display: none !important;
         }
-        
-        .doc-section:hover {
-            transform: translateY(-5px);
-        }
-        
-        .section-title {
-            position: relative;
-            margin-bottom: 2rem;
+
+        .avatar-text {
             font-weight: 700;
-            color: var(--dark);
-            padding-bottom: 15px;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: var(--gradient);
-            border-radius: 2px;
-        }
-        
-        /* Cards */
-        .concept-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            margin-bottom: 25px;
-            overflow: hidden;
-        }
-        
-        .concept-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        
-        .concept-card-header {
-            background: var(--gradient);
-            color: white;
-            padding: 20px;
-            border-bottom: none;
-        }
-        
-        .ratio-card {
-            border-left: 4px solid var(--primary);
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .ratio-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .ratio-icon {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
             color: var(--primary);
-        }
-        
-        /* Tables */
-        .ratio-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .ratio-table th {
-            background: var(--gradient);
-            color: white;
-            padding: 15px;
-            text-align: left;
-        }
-        
-        .ratio-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .ratio-table tr:hover {
-            background: rgba(67, 97, 238, 0.05);
-        }
-        
-        /* Interactive Elements */
-        .importance-badge {
-            background: rgba(76, 201, 240, 0.1);
-            color: var(--success);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-        
-        .formula-box {
-            background: #f8f9fa;
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
             font-size: 1.1rem;
+            line-height: 1;
         }
-        
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            margin-top: 50px;
+
+        /* Menú Desplegable - estilos que sobrescriben el template */
+        .dropdown-menu-user {
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
+            width: auto;
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            padding: 10px !important;
+            min-width: 240px;
+            margin-top: 10px !important;
+            background: #fff !important;
+            z-index: 1000 !important;
+            /* Oculto por defecto */
+            transform: scale(1, 0) !important;
+            transform-origin: top !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out, visibility 0.2s !important;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .doc-hero {
-                padding: 60px 0 40px;
+
+        /* Mostrar menú cuando el padre tiene clase 'open' */
+        #userMenuLi.open .dropdown-menu-user {
+            transform: scale(1, 1) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Cabecera del usuario dentro del menú */
+        .user-info-header {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-role-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .user-email-text {
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 500;
+            word-break: break-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Items del menú */
+        .dropdown-menu-user>li {
+            list-style: none !important;
+        }
+
+        .dropdown-menu-user>li>a {
+            border-radius: 6px;
+            padding: 8px 15px !important;
+            font-size: 0.95rem;
+            color: #2c3e50 !important;
+            display: block;
+            text-decoration: none;
+            text-transform: none !important;
+        }
+
+        .dropdown-menu-user>li>a:hover {
+            background: rgba(52, 152, 219, 0.1) !important;
+            color: var(--accent) !important;
+        }
+
+        .dropdown-menu-user>li>a.logout:hover {
+            background: rgba(231, 76, 60, 0.1) !important;
+            color: #e74c3c !important;
+        }
+
+        /* Botón de acceder para visitantes */
+        #userMenuContainer .btn-primary {
+            margin: 0 10px !important;
+            padding: 8px 20px !important;
+            border-radius: 20px !important;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Animación */
+        .animate {
+            animation-duration: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .slideIn {
+            animation-name: slideIn;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(15px);
+                opacity: 0;
             }
-            
-            .doc-section {
-                padding: 25px;
-            }
-            
-            .doc-sidebar {
-                margin-bottom: 20px;
-                position: relative;
-                top: 0;
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-chart-line me-2"></i>FinAnalyzer
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i> Inicio</a>
-                    <a class="nav-link" href="ranking.html"><i class="fas fa-chart-bar me-1"></i> Análisis Comparativo</a>
-                    <a class="nav-link active" href="documentacion.html"><i class="fas fa-book me-1"></i> Documentación</a>
-                    <a class="nav-link" href="#"><i class="fas fa-envelope me-1"></i> Contacto</a>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="doc-hero">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 mb-4 fw-bold">Documentación - Razones Financieras</h1>
-                    <p class="lead mb-0">Comprende los fundamentos del análisis financiero y cómo interpretar los indicadores clave</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Documentation Content -->
-    <div class="container py-5">
-        <div class="row">
-            <!-- Sidebar Navigation -->
-            <div class="col-lg-3">
-                <div class="doc-sidebar">
-                    <h5 class="mb-4">Contenido</h5>
-                    <div class="doc-nav-item active" onclick="scrollToSection('introduccion')">
-                        <i class="fas fa-play-circle me-2"></i>Introducción
-                    </div>
-                    <div class="doc-nav-item" onclick="scrollToSection('importancia')">
-                        <i class="fas fa-star me-2"></i>Importancia
-                    </div>
-                    <div class="doc-nav-item" onclick="scrollToSection('clasificacion')">
-                        <i class="fas fa-layer-group me-2"></i>Clasificación
-                    </div>
-                    <div class="doc-nav-item" onclick="scrollToSection('ratios')">
-                        <i class="fas fa-calculator me-2"></i>Ratios Calculados
-                    </div>
-                    <div class="doc-nav-item" onclick="scrollToSection('interpretacion')">
-                        <i class="fas fa-chart-line me-2"></i>Interpretación
-                    </div>
-                    <div class="doc-nav-item" onclick="scrollToSection('aplicacion')">
-                        <i class="fas fa-rocket me-2"></i>Aplicación Práctica
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-lg-9">
-                <!-- Introducción Section -->
-                <section id="introduccion" class="doc-section">
-                    <h2 class="section-title">¿Qué son las Razones Financieras?</h2>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="concept-card">
-                                <div class="concept-card-header">
-                                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Definición</h5>
-                                </div>
-                                <div class="card-body">
-                                    <p>Las razones financieras, también conocidas como ratios financieros, son herramientas de análisis que relacionan diferentes partidas de los estados financieros para obtener información significativa sobre el desempeño y la situación financiera de una empresa.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="concept-card">
-                                <div class="concept-card-header">
-                                    <h5 class="mb-0"><i class="fas fa-bullseye me-2"></i>Objetivo Principal</h5>
-                                </div>
-                                <div class="card-body">
-                                    <p>Permiten evaluar la rentabilidad, liquidez, solvencia y eficiencia operativa de una organización, facilitando la toma de decisiones estratégicas basadas en datos cuantitativos.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="formula-box">
-                        <strong>Fórmula General:</strong> Ratio = (Partida del Estado Financiero A) / (Partida del Estado Financiero B)
-                    </div>
-                </section>
-
-                <!-- Importancia Section -->
-                <section id="importancia" class="doc-section">
-                    <h2 class="section-title">Importancia del Análisis de Razones Financieras</h2>
-                    <div class="importance-badge">
-                        <i class="fas fa-exclamation-circle me-2"></i>Valor Estratégico
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-4 mb-4">
-                            <div class="ratio-card text-center">
-                                <div class="ratio-icon">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <h5>Evaluación del Desempeño</h5>
-                                <p class="text-muted">Permiten medir la eficiencia operativa y la rentabilidad de la empresa en el tiempo.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="ratio-card text-center">
-                                <div class="ratio-icon">
-                                    <i class="fas fa-balance-scale"></i>
-                                </div>
-                                <h5>Análisis Comparativo</h5>
-                                <p class="text-muted">Facilitan la comparación con empresas del mismo sector o con estándares de la industria.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-4">
-                            <div class="ratio-card text-center">
-                                <div class="ratio-icon">
-                                    <i class="fas fa-search-dollar"></i>
-                                </div>
-                                <h5>Detección de Problemas</h5>
-                                <p class="text-muted">Ayudan a identificar áreas problemáticas antes de que se conviertan en crisis.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-primary mt-4">
-                        <h6><i class="fas fa-info-circle me-2"></i>¿Por qué son importantes?</h6>
-                        <p class="mb-0">Las razones financieras transforman datos contables complejos en indicadores simples y comprensibles que permiten a inversionistas, acreedores y gerentes tomar decisiones informadas sobre la salud financiera de una empresa.</p>
-                    </div>
-                </section>
-
-                <!-- Clasificación Section -->
-                <section id="clasificacion" class="doc-section">
-                    <h2 class="section-title">Clasificación de las Razones Financieras</h2>
-                    
-                    <table class="ratio-table">
-                        <thead>
-                            <tr>
-                                <th>Tipo de Ratio</th>
-                                <th>Propósito</th>
-                                <th>Ejemplos</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Liquidez</strong></td>
-                                <td>Capacidad de pagar obligaciones a corto plazo</td>
-                                <td>Razón Corriente, Prueba del Ácido</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Solvencia</strong></td>
-                                <td>Capacidad de pagar deudas a largo plazo</td>
-                                <td>Razón de Endeudamiento, Cobertura de Intereses</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Rentabilidad</strong></td>
-                                <td>Capacidad de generar utilidades</td>
-                                <td>Margen Neto, ROA, ROE</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Eficiencia</strong></td>
-                                <td>Uso eficiente de los activos</td>
-                                <td>Rotación de Inventarios, Período de Cobranza</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Mercado</strong></td>
-                                <td>Valoración de la empresa en el mercado</td>
-                                <td>P/E Ratio, Valor Libro</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-
-                <!-- Ratios Calculados Section -->
-                <section id="ratios" class="doc-section">
-                    <h2 class="section-title">Ratios Calculados en el Sistema</h2>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-tachometer-alt"></i>
-                                    </div>
-                                    <h5 class="mb-0">Razón Rápida</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> (Activo Corriente - Inventarios) / Pasivo Corriente</p>
-                                <p><strong>Interpretación:</strong> Mide la capacidad de pago inmediata sin depender de la venta de inventarios.</p>
-                            </div>
-                            
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-flask"></i>
-                                    </div>
-                                    <h5 class="mb-0">Prueba del Ácido</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> Similar a Razón Rápida, excluye inventarios por ser menos líquidos.</p>
-                                <p><strong>Interpretación:</strong> Evalúa la capacidad de pagar deudas a corto plazo con activos más líquidos.</p>
-                            </div>
-                            
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-landmark"></i>
-                                    </div>
-                                    <h5 class="mb-0">Razón de Deuda Total</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> Pasivo Total / Activo Total</p>
-                                <p><strong>Interpretación:</strong> Indica el porcentaje de activos financiado con deuda.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                    </div>
-                                    <h5 class="mb-0">Rotación del Interés Ganado</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> Utilidad Operativa / Gastos por Intereses</p>
-                                <p><strong>Interpretación:</strong> Mide la capacidad de cubrir gastos financieros con las utilidades.</p>
-                            </div>
-                            
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-boxes"></i>
-                                    </div>
-                                    <h5 class="mb-0">Rotación del Inventario</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> Costo de Ventas / Inventario Promedio</p>
-                                <p><strong>Interpretación:</strong> Evalúa la eficiencia en la gestión de inventarios.</p>
-                            </div>
-                            
-                            <div class="ratio-card">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="ratio-icon">
-                                        <i class="fas fa-crown"></i>
-                                    </div>
-                                    <h5 class="mb-0">Rendimiento sobre Capital</h5>
-                                </div>
-                                <p><strong>Fórmula:</strong> Utilidad Neta / Patrimonio</p>
-                                <p><strong>Interpretación:</strong> Mide la rentabilidad generada para los accionistas.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Interpretación Section -->
-                <section id="interpretacion" class="doc-section">
-                    <h2 class="section-title">Interpretación de Resultados</h2>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="concept-card">
-                                <div class="concept-card-header">
-                                    <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Valores Óptimos</h5>
-                                </div>
-                                <div class="card-body">
-                                    <ul>
-                                        <li><strong>Razón Rápida:</strong> > 1.0 (Depende del sector)</li>
-                                        <li><strong>Razón de Deuda:</strong> < 60% (Varía por industria)</li>
-                                        <li><strong>Margen de Utilidad:</strong> Comparar con promedio del sector</li>
-                                        <li><strong>ROE:</strong> > Costo de oportunidad del inversionista</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="concept-card">
-                                <div class="concept-card-header">
-                                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Señales de Alerta</h5>
-                                </div>
-                                <div class="card-body">
-                                    <ul>
-                                        <li>Razones de liquidez en declive constante</li>
-                                        <li>Alto nivel de endeudamiento con baja rentabilidad</li>
-                                        <li>Rotaciones menores a los promedios del sector</li>
-                                        <li>Deterioro en márgenes de utilidad</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-warning mt-4">
-                        <h6><i class="fas fa-lightbulb me-2"></i>Consejo de Análisis</h6>
-                        <p class="mb-0">Ningún ratio debe analizarse de forma aislada. Es crucial considerar la tendencia histórica, comparar con empresas del mismo sector y analizar el contexto económico general para una interpretación adecuada.</p>
-                    </div>
-                </section>
-
-                <!-- Aplicación Práctica Section -->
-                <section id="aplicacion" class="doc-section">
-                    <h2 class="section-title">Aplicación Práctica</h2>
-                    
-                    <div class="row">
-                        <div class="col-md-8 mx-auto">
-                            <div class="concept-card">
-                                <div class="concept-card-header text-center">
-                                    <h4 class="mb-0"><i class="fas fa-rocket me-2"></i>¿Para Qué Sirven en la Práctica?</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row text-center">
-                                        <div class="col-md-4 mb-3">
-                                            <i class="fas fa-user-tie fa-2x text-primary mb-3"></i>
-                                            <h6>Para Inversionistas</h6>
-                                            <p class="small">Evaluar oportunidades de inversión y riesgo</p>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <i class="fas fa-handshake fa-2x text-success mb-3"></i>
-                                            <h6>Para Acreedores</h6>
-                                            <p class="small">Analizar capacidad de pago y riesgo crediticio</p>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <i class="fas fa-chart-line fa-2x text-warning mb-3"></i>
-                                            <h6>Para Gerentes</h6>
-                                            <p class="small">Tomar decisiones operativas y estratégicas</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-center mt-4">
-                                        <a href="ranking.html" class="btn btn-primary btn-lg">
-                                            <i class="fas fa-play-circle me-2"></i>Comenzar Análisis Práctico
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
+<body class="double-diagonal">
+    <!-- Preloader Starts -->
+    <div class="preloader" id="preloader">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+        </a>
+        <div class="loader" id="loader"></div>
     </div>
 
-    <!-- Footer -->
-    <footer class="py-4">
-        <div class="container text-center">
-            <p class="mb-0">© 2025 Christopher Alexander Mena Garcia - Universidad Nacional de Ingeniería UNI</p>
-            <p class="mb-0">Sistema de Análisis Financiero Comparativo</p>
+    <!-- Live Style Switcher Ends - demo only -->
+    <!-- Page Wrapper Starts -->
+    <div class="wrapper">
+        <!-- Header Starts -->
+        <header class="header">
+            <div class="header-inner">
+                <!-- Navbar Starts -->
+                <nav class="navbar">
+                    <!-- Logo Starts -->
+                    <div class="logo">
+                        <a class="navbar-brand" href="index.html">
+                            <i class="fas fa-chart-line me-2"></i>FinAnalyzer Pro
+                        </a>
+                    </div>
+                    <!-- Logo Ends -->
+                    <!-- Toggle Icon for Mobile Starts -->
+                    <button class="navbar-toggle navbar-toggler" type="button" data-toggle="collapse"
+                        data-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span id="icon-toggler">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                    <!-- Toggle Icon for Mobile Ends -->
+                    <div id="navbarSupportedContent" class="collapse navbar-collapse navbar-responsive-collapse">
+                        <!-- Main Menu Starts -->
+                        <ul class="nav navbar-nav" id="main-navigation">
+                            <li class="active"><a href="index.html"><i class="fa fa-home"></i> Home</a></li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-file-text-o"></i> pages <i
+                                        class="fa fa-angle-down icon-angle"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="register.html">Registro</a></li>
+                                    <li><a href="login.html">Inicio de sesión</a></li>
+                                    <li><a href="shopping-cart.html">Carrito de compras</a></li>
+                                    <li><a href="shopping-checkout.html">Pago de compras</a></li>
+                                </ul>
+                            </li>
+                            <!-- Cart Icon Starts -->
+                            <li class="cart hidden-xs hidden-sm"><a href="shopping-cart.html"><i
+                                        class="fa fa-shopping-cart"></i></a></li>
+                            <!-- Cart Icon Starts -->
+                            <!-- Search Icon Starts -->
+                            <li class="search hidden-xs hidden-sm"><button id="search-button"
+                                    class="fa fa-search"></button></li>
+                            <!-- Search Icon Ends -->
+                            <!-- User Menu Starts -->
+                            <li class="dropdown" id="userMenuLi">
+                                <div id="userMenuContainer">
+                                </div>
+                            </li>
+                            <!-- User Menu Ends -->
+                        </ul>
+                        <!-- Main Menu Ends -->
+                    </div>
+                    <!-- Search Input Starts -->
+                    <div class="site-search hidden-xs">
+                        <div class="search-container">
+                            <input id="search-input" type="text" placeholder="type your keyword and hit enter ...">
+                            <span class="close">×</span>
+                        </div>
+                    </div>
+                    <!-- Search Input Ends -->
+                    <!-- Navigation Menu Ends -->
+                </nav>
+                <!-- Navbar Ends -->
+            </div>
+        </header>
+        <!-- Header Ends -->
+        <!-- Main Slider Section Starts -->
+        <section class="mainslider" id="mainslider">
+            <!-- Slider Hero Starts -->
+            <div class="rev_slider_wrapper fullwidthbanner-container dark-slider" data-alias="vimeo-hero"
+                style="margin:0px auto;background-color:transparent;padding:0px;margin-top:0px;margin-bottom:0px;">
+                <!-- START REVOLUTION SLIDER 5.0.7 fullwidth mode -->
+                <div id="rev_slider_kenburns" class="rev_slider fullwidthabanner" style="display:none;"
+                    data-version="5.0.7">
+                    <ul>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-18" data-transition="zoomin" data-slotamount="7"
+                            data-easein="Power4.easeInOut" data-easeout="Power4.easeInOut" data-masterspeed="2000"
+                            data-thumb="img/revolution-slider/kenburns/thumb1.jpg" data-rotate="0"
+                            data-saveperformance="off" data-title="Ken Burns" data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns1.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-textAlign="['left','left','left','left']" data-elementdelay="0.05"
+                                style="z-index: 5; white-space: nowrap;">Somos FinAnalyzer
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">La mejor herramienta Analitica financiera
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-2" data-transition="zoomin" data-slotamount="default" data-easein="default"
+                            data-easeout="default" data-masterspeed="default"
+                            data-thumb="img/revolution-slider/kenburns/thumb2.jpg" data-rotate="0"
+                            data-fsmasterspeed="300" data-fsslotamount="7" data-saveperformance="off" data-title="Intro"
+                            data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns2.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-elementdelay="0.05" style="z-index: 5; white-space: nowrap;">Somos uno
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">Equipo Analitico
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                        <!-- SLIDE  -->
+                        <li data-index="rs-3" data-transition="zoomin" data-slotamount="default" data-easein="default"
+                            data-easeout="default" data-masterspeed="default"
+                            data-thumb="img/revolution-slider/kenburns/thumb3.jpg" data-rotate="0"
+                            data-fsmasterspeed="300" data-fsslotamount="7" data-saveperformance="off" data-title="Intro"
+                            data-description="">
+                            <!-- MAIN IMAGE -->
+                            <img alt="" src="img/revolution-slider/kenburns/kenburns3.jpg"
+                                data-bgposition="center center" data-kenburns="on" data-duration="30000"
+                                data-ease="Linear.easeNone" data-scalestart="100" data-scaleend="180"
+                                data-rotatestart="0" data-rotateend="0" data-offsetstart="0 0" data-offsetend="0 0"
+                                data-bgparallax="10" class="rev-slidebg" data-no-retina>
+                            <!-- LAYERS -->
+
+                            <!-- LAYER NR. 1 -->
+                            <div class="tp-caption NotGeneric-Title   tp-resizeme rs-parallaxlevel-0"
+                                data-frames='[{"from":"x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":2000,"to":"o:1;","delay":1000,"split":"chars","splitdelay":0.05,"ease":"Power4.easeInOut"},{"delay":"wait","speed":1000,"to":"y:[100%];","mask":"x:inherit;y:inherit;s:inherit;e:inherit;","ease":"Power2.easeInOut"}]'
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                                data-fontsize="['70','70','70','45']" data-lineheight="['70','70','70','50']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="x:[105%];z:0;rX:45deg;rY:0deg;rZ:90deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1000"
+                                data-splitin="chars" data-splitout="none" data-responsive_offset="on"
+                                data-elementdelay="0.05" style="z-index: 5; white-space: nowrap;">Somos la mas optima
+                            </div>
+
+                            <!-- LAYER NR. 2 -->
+                            <div class="tp-caption NotGeneric-SubTitle   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['52','52','52','51']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:2000;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="1500"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 6; white-space: nowrap;">HERRAMIENTA DE ANÁLISIS FINANCIERO NICARAGUENSE
+                            </div>
+
+                            <!-- LAYER NR. 3 -->
+                            <div class="tp-caption NotGeneric-Icon   tp-resizeme rs-parallaxlevel-0"
+                                data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                                data-y="['middle','middle','middle','middle']" data-voffset="['-68','-68','-68','-68']"
+                                data-width="none" data-height="none" data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-style_hover="cursor:default;"
+                                data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                                data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                                data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                                data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" data-start="2000"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                style="z-index: 7; white-space: nowrap;"><i class="pe-7s-refresh"></i>
+                            </div>
+                            <!-- LAYER NR. 4 -->
+                            <div class="tp-caption" data-x="['center','center','center','center']"
+                                data-hoffset="['0','0','0','0']" data-y="['middle','middle','middle','middle']"
+                                data-voffset="['150','150','150','150']" data-width="none" data-height="none"
+                                data-whitespace="nowrap" data-transform_idle="o:1;"
+                                data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                                data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);"
+                                data-transform_in="y:100px;sX:1;sY:1;opacity:0;s:2000;e:Power3.easeInOut;"
+                                data-transform_out="y:50px;opacity:0;s:1000;e:Power2.easeInOut;" data-start="750"
+                                data-splitin="none" data-splitout="none" data-responsive_offset="on"
+                                data-responsive="off"
+                                style="z-index: 11; white-space: nowrap;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;">
+                                <a href="#about" class="custom-button slider-button scroll-to-target">Lee sobre
+                                    nosotros</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="tp-static-layers"></div>
+                    <div class="tp-bannertimer tp-bottom" style="visibility: hidden !important;"></div>
+                </div>
+            </div>
+            <!-- END REVOLUTION SLIDER -->
+            <!-- Slider Hero Ends -->
+        </section>
+        <!-- Main Slider Section Ends -->
+        <!-- About Section Starts -->
+        <section id="about" class="about">
+            <!-- Container Starts -->
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>Sobre</span> Nosotros</h1>
+                    <h4>Quiénes Somos</h4>
+                </div>
+                <!-- Main Heading Ends -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-user" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- About Content Starts -->
+                <div class="row about-content">
+                    <div class="col-sm-12 col-md-6 col-lg-6 about-left-side">
+                        <h3 class="title-about">SOMOS <strong>FinAnalyzer</strong></h3>
+                        <hr>
+                        <p>representamos la nueva generación de tecnología financiera en Centroamérica.
+                            Desarrollada en el corazón de Nicaragua, nuestra plataforma es la primera solución local
+                            diseñada específicamente para
+                            simplificar el cálculo y la interpretación de razones financieras </p>
+                        <!-- Tabs Heading Starts -->
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#menu1">Misión</a></li>
+                            <li><a data-toggle="tab" href="#menu2">Ventajas</a></li>
+                            <li><a data-toggle="tab" href="#menu3">Garantías</a></li>
+                        </ul>
+                        <!-- Tabs Heading Ends -->
+                        <!-- Tabs Content Starts -->
+                        <div class="tab-content">
+                            <div id="menu1" class="tab-pane fade in active">
+                                <p>Proveer a estudiantes, emprendedores y empresarios nicaragüenses de una herramienta
+                                    digital accesible y potente para el diagnóstico financiero. Buscamos eliminar las
+                                    barreras técnicas del análisis contable,
+                                    permitiendo que cualquier negocio pueda medir su salud financiera y tomar decisiones
+                                    estratégicas con precisión y rapidez.</p>
+                            </div>
+                            <div id="menu2" class="tab-pane fade">
+                                <p>Nos diferenciamos por ser una innovación 100% local, desarrollada por talento de la
+                                    UNI y adaptada a la realidad empresarial de la región. Ofrecemos precisión
+                                    matemática en cada cálculo, seguridad de datos de nivel profesional y una interfaz
+                                    intuitiva que transforma números complejos en reportes claros y accionables.</p>
+                            </div>
+                            <div id="menu3" class="tab-pane fade">
+                                <p>Nuestro compromiso es brindar a estudiantes, auditores y gerentes una infraestructura
+                                    digital robusta, segura y accesible,
+                                    eliminando las barreras técnicas del análisis financiero tradicional.</p>
+                            </div>
+                        </div>
+                        <!-- Tabs Content Ends -->
+                        <a class="custom-button" href="#">Lee mas sobre nosotros</a>
+                    </div>
+                    <div class="col-md-6 col-lg-6 about-right-side">
+                        <div class="full-image-container hovered">
+                            <img class="img-responsive hidden-xs" src="img/about.jpg" alt="">
+                            <div class="full-image-overlay">
+                                <h3>Porque <strong>Escogernos</strong></h3>
+                                <ul class="list-why-choose-us">
+                                    <li>Innovación 100% Nica 🇳🇮</li>
+                                    <li>Precisión Financiera Garantizada</li>
+                                    <li>Seguridad de Datos Blindada</li>
+                                    <li>Análisis en Tiempo Real</li>
+                                    <li>Interfaz Simple e Intuitiva</li>
+                                    <li>& mucho mas ...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- About Content Ends -->
+            </div>
+            <!-- Container Ends -->
+        </section>
+        <!-- About Section Ends -->
+        <!-- Video Section Starts -->
+        <section class="videopromotion">
+            <div class="section-overlay">
+                <!-- Container Starts -->
+                <div class="container">
+                    <!-- Main Heading Starts -->
+                    <div class="text-center top-text">
+                        <h1><span>Video</span> Promo</h1>
+                        <h4>Conoce FinAnalyzer</h4>
+                    </div>
+                    <!-- Main Heading Ends -->
+                    <div class="video-content">
+                        <p class="text-center">¡Mira FinAnalyzer como nunca antes lo habías visto! Mira nuestro nuevo
+                            video
+                            promocional,<br> y descubre todo lo que una membresía de FinAnalyzer puede hacer por ti!</p>
+                        <!-- Video Play Starts -->
+                        <div class="magnific-popup-gallery">
+                            <div class="btn-wrapper text-center"><a class="image-wrap mfp-youtube"
+                                    href="https://www.youtube.com/watch?v=0gv7OC9L2s8"></a></div>
+                        </div>
+                        <!-- Video Play Ends -->
+                    </div>
+                </div>
+                <!-- Container Ends -->
+            </div>
+        </section>
+        <!-- Video Section Ends -->
+        <!-- Services Section Starts -->
+        <section class="services">
+            <!-- Container Starts -->
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>Nuestros</span> Servicios</h1>
+                    <h4>Lo que hacemos</h4>
+                </div>
+                <!-- Main Heading Starts -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-cogs" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- Services Starts -->
+                <div class="row services-box">
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-leaf" data-headline="Soluciones Creativas"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-leaf">
+                            <h2>Soluciones Creativas</h2>
+                            <p>Transformamos la complejidad contable en estrategias claras. No solo te damos números; 
+                                diseñamos formas innovadoras de visualizar tu información para que descubras oportunidades de crecimiento ocultas y resuelvas desafíos financieros 
+                                con creatividad y precisión técnica.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-anchor" data-headline="Servicios Destacados"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-anchor">
+                            <h2>Servicios Destacados</h2>
+                            <p>Accede a un conjunto integral de herramientas financieras de clase mundial. Desde cálculos de liquidez instantáneos hasta métricas de rentabilidad avanzadas, nuestros servicios están diseñados para cubrir todas las necesidades analíticas de la empresa nicaragüense moderna.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-comments-o" data-headline="Comparacion"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-comments-o">
+                            <h2>Comparamos tu Rendimiento</h2>
+                            <p>Entiende tu posición real en el mercado. Nuestra herramienta te permite contrastar el desempeño de tu empresa frente a múltiples competidores simultáneamente, brindándote una perspectiva clara de tus ventajas competitivas y áreas de mejora frente al sector.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-support" data-headline="Diagnosticamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <div class="services-box-item-content fa fa-support">
+                            <h2>Diagnosticamos tu Salud Financiera</h2>
+                            <p>Realizamos un chequeo profundo de la salud financiera de tu negocio. Identificamos síntomas de riesgo y fortalezas operativas a través de un análisis detallado de tus razones financieras, ayudándote a detectar problemas antes de que afecten tu rentabilidad.</p>
+                        </div>
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-cogs" data-headline="Automatizamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-cogs">
+                            <h2>Automatizamos Reportes Complejos</h2>
+                            <p>Dile adiós a las hojas de cálculo manuales y a los errores de fórmula. Procesamos tus estados financieros al instante, generando reportes, gráficos y rankings profesionales en segundos, para que inviertas tu tiempo en tomar decisiones, no en calcular datos.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                    <!-- Service Item Starts -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 services-box-item">
+                        <!-- Service Item Cover Starts -->
+                        <span class="services-box-item-cover fa fa-file-pdf-o" data-headline="Resguardamos"></span>
+                        <!-- Service Item Cover Ends -->
+                        <!-- Service Item Content Starts -->
+                        <div class="services-box-item-content fa fa-file-pdf-o">
+                            <h2>Resguardamos tu Historial</h2>
+                            <p>Tu información es el activo más valioso y su seguridad es nuestra prioridad. Utilizamos infraestructura en la nube de última generación y encriptación avanzada para garantizar que tus datos financieros históricos estén protegidos, respaldados y accesibles solo para ti.</p>
+                        </div>
+                        <!-- Service Item Content Ends -->
+                    </div>
+                    <!-- Service Item Ends -->
+
+                </div>
+                <!-- Services Ends -->
+            </div>
+        </section>
+        <!-- Services Section Ends -->
+        <!-- Pricing Starts -->
+        <section class="pricing">
+            <div class="container">
+                <!-- Main Heading Starts -->
+                <div class="text-center top-text">
+                    <h1><span>paquetes</span> asequibles</h1>
+                    <h4>nuestros precios</h4>
+                </div>
+                <!-- Main Heading Starts -->
+                <!-- Divider Starts -->
+                <div class="divider text-center">
+                    <span class="outer-line"></span>
+                    <span class="fa fa-dollar" aria-hidden="true"></span>
+                    <span class="outer-line"></span>
+                </div>
+                <!-- Divider Ends -->
+                <!-- Section Content Starts -->
+                <div class="row pricing-tables-content">
+                    <div class="pricing-container">
+                        <!-- Pricing Switcher Starts -->
+                        <div class="pricing-switcher">
+                            <p>
+                                <input type="radio" name="switch" value="monthly" id="monthly-1" checked>
+                                <label for="monthly-1">MENSUAL</label>
+                                <input type="radio" name="switch" value="yearly" id="yearly-1">
+                                <label for="yearly-1">ANUAL</label>
+                                <span class="switch"></span>
+                            </p>
+                        </div>
+                        <!-- Pricing Switcher Ends -->
+                        <!-- Pricing Tables Starts -->
+                        <ul class="pricing-list bounce-invert">
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #1 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <header class="pricing-header">
+                                            <h2>bronze</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">100</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>1 GB</em> disk space</li>
+                                                <li><em>2</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #1 Ends -->
+                                    <!-- Yearly Pricing Table #1 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <header class="pricing-header">
+                                            <h2>bronze</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">360</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>10 GB</em> disk space</li>
+                                                <li><em>100</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #1 Ends -->
+                                </ul>
+                            </li>
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #2 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <header class="pricing-header">
+                                            <h2>silver</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">300</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>3 GB</em> disk space</li>
+                                                <li><em>5</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #2 Ends -->
+                                    <!-- Yearly Pricing Table #2 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <header class="pricing-header">
+                                            <h2>silver</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">599</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>100 GB</em> disk space</li>
+                                                <li><em>unlimited</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #2 Ends -->
+                                </ul>
+                            </li>
+                            <li class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                <ul class="pricing-wrapper">
+                                    <!-- Monthly Pricing Table #3 Starts -->
+                                    <li data-type="monthly" class="is-visible">
+                                        <div class="badge-popular">
+                                            <span class="popular">POPULAR</span>
+                                        </div>
+                                        <header class="pricing-header">
+                                            <h2>gold</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">500</span>
+                                                <span class="duration">mo</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>5 GB</em> disk space</li>
+                                                <li><em>10</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Monthly Pricing Table #3 Ends -->
+                                    <!-- Yearly Pricing Table #3 Starts -->
+                                    <li data-type="yearly" class="is-hidden">
+                                        <div class="badge-popular">
+                                            <span class="popular">POPULAR</span>
+                                        </div>
+                                        <header class="pricing-header">
+                                            <h2>gold</h2>
+                                            <div class="price-content">
+                                                <span class="currency">$</span>
+                                                <span class="value">899</span>
+                                                <span class="duration">yr</span>
+                                            </div>
+                                        </header>
+                                        <div class="pricing-body">
+                                            <ul class="pricing-features">
+                                                <li><em>unlimited</em> disk space</li>
+                                                <li><em>unlimited</em> email accounts</li>
+                                                <li><em>unlimited</em> subomains</li>
+                                            </ul>
+                                        </div>
+                                        <footer class="pricing-footer">
+                                            <a class="custom-button" href="#">añadir al carrito</a>
+                                        </footer>
+                                    </li>
+                                    <!-- Yearly Pricing Table #3 Ends -->
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Pricing Ends -->
+        <!-- Call To Action Section Starts -->
+        <section class="call-to-action">
+            <div class="section-overlay">
+                <!-- Container Starts -->
+                <div class="container">
+                    <!-- Main Heading Starts -->
+                    <div class="text-center top-text">
+                        <h1><span>crea una</span> cuenta</h1>
+                        <h4>comienza absolutamente gratis</h4>
+                    </div>
+                    <!-- Main Heading Starts -->
+                    <!-- Call To Action Starts -->
+                    <div class="call-to-action-content">
+                        <ul>
+                            <li>No se requiere tarjeta de crédito</li>
+                            <li>Análisis en Tiempo Real</li>
+                            <li>Precisión Financiera</li>
+                            <li>Boletín diario</li>
+                        </ul>
+                        <a class="custom-button" href="login/registro.html">regístrate ahora</a>
+                    </div>
+                    <!-- Call To Action Ends -->
+                </div>
+                <!-- Container Ends -->
+            </div>
+        </section>
+        <!-- facts Section Ends -->
+        <!-- Footer Section Starts -->
+        <footer class="footer top-logos">
+            <!-- Footer Top Area Starts -->
+            <div class="container top-footer">
+                <div class="row">
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-2">
+                        <h4>FinAnalyzer</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><a href="index.html">Inicio</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-2">
+                        <h4>Soporte</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><a href="login/registro.html">Registrarse</a></li>
+                                <li><a href="login/login.html">Iniciar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-4 col-md-3">
+                        <h4>Contactanos</h4>
+                        <div class="menu">
+                            <ul>
+                                <li><span><i class="fa fa-envelope-open"></i> Finanalyzer@gmail.com</span></li>
+                                <li><span><i class="fa fa-phone"></i> 5555-2222</span></li>
+                                <li><span><i class="fa fa-map-marker"></i> Managua Nicaragua</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Footer Widget Ends -->
+                    <!-- Footer Widget Starts -->
+                    <div class="col-xs-6 col-sm-12 col-md-4">
+                        <hr>
+                        <!-- Social Media Links Starts -->
+                        <div class="social-icons">
+                            <ul class="social">
+                                <li>
+                                    <a class="twitter" href="#" title="twitter"></a>
+                                </li>
+                                <li>
+                                    <a class="facebook" href="#" title="facebook"></a>
+                                </li>
+                                <li>
+                                    <a class="google" href="#" title="google"></a>
+                                </li>
+                                <li>
+                                    <a class="linkedin" href="#" title="linkedin"></a>
+                                </li>
+                                <li>
+                                    <a class="youtube" href="#" title="youtube"></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Social Media Links Ends -->
+                    </div>
+                    <!-- Footer Widget Ends -->
+                </div>
+                <!-- Footer Bottom Area Starts -->
+                <div class="bottom-footer">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- Copyright Text Starts -->
+                            <p class="text-center"><a href="#">FinAnalyzer</a></p>
+                            <!-- Copyright Text Ends -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Bottom Area Ends -->
+            </div>
+            <!-- Footer Top Area Ends -->
+
+        </footer>
+        <!-- Footer Section Ends -->
+        <!-- Back To Top Starts -->
+        <div id="back-top-wrapper">
+            <p id="back-top">
+                <a href="#top"><span></span></a>
+            </p>
         </div>
-    </footer>
+        <!-- Back To Top Ends -->
+    </div>
+    <!-- Wrapper Ends -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Template JS Files -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/plugins/jquery.easing.1.3.js"></script>
+    <script src="js/plugins/bootstrap.min.js"></script>
+    <script src="js/plugins/jquery.bxslider.min.js"></script>
+    <script src="js/plugins/jquery.filterizr.js"></script>
+    <script src="js/plugins/jquery.magnific-popup.min.js"></script>
+
+    <!-- Revolution Slider Main JS Files -->
+    <script src="js/plugins/revolution/js/jquery.themepunch.tools.min.js"></script>
+    <script src="js/plugins/revolution/js/jquery.themepunch.revolution.min.js"></script>
+
+    <!-- Revolution Slider Extensions -->
+
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+    <script src="js/plugins/revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+    <!-- Live Style Switcher JS File - only demo -->
+    <script src="js/styleswitcher.js"></script>
+
+    <!-- Main JS Initialization File -->
+    <script src="js/custom.js"></script>
+
     <script>
-        // Smooth scrolling for navigation
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            const offset = 100;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
+        // 1. CONFIGURACIÓN (Pega tus claves aquí)
+        const supabaseUrl = 'https://tggsqzdjfyfpxduinaio.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnZ3NxemRqZnlmcHhkdWluYWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMTIzMTYsImV4cCI6MjA3OTU4ODMxNn0.32UELAO2dC2merWnv0VgKVzE8SJy0wI-cp9X2JljnCw';
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+        // 2. CONTROLADOR DEL NAVBAR
+        document.addEventListener('DOMContentLoaded', async () => {
+            const menuContainer = document.getElementById('userMenuContainer');
 
-            // Update active nav item
-            document.querySelectorAll('.doc-nav-item').forEach(item => {
-                item.classList.remove('active');
+            // A. Verificar Sesión Real
+            const { data: { session } } = await client.auth.getSession();
+
+            // B. Verificar Modo Espectador
+            const esEspectador = localStorage.getItem('modo_espectador') === 'true';
+
+            if (session) {
+                // --- CASO 1: USUARIO LOGUEADO ---
+                const email = session.user.email;
+                const inicial = email.charAt(0).toUpperCase();
+
+                // 1. Inyectamos el HTML
+                menuContainer.innerHTML = `
+        <a href="#" id="btnBolitaUsuario" class="user-avatar-btn">
+            <div class="avatar-text">${inicial}</div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableUsuario">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge"><i class="fa fa-user-circle"></i> Usuario</span>
+                    <div class="user-email-text">${email}</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-trophy"></i> Ranking</a></li>
+            <li><a href="documentacion.html"><i class="fa fa-book"></i> Documentación</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="logout text-danger" href="#" onclick="logout()"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
+        </ul>
+        `;
+
+                // 2. Agregar toggle al botón
+                const btnBolita = document.getElementById('btnBolitaUsuario');
+                if (btnBolita) {
+                    btnBolita.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('userMenuLi').classList.toggle('open');
+                    });
+                }
+
+            } else if (esEspectador) {
+                // --- CASO 2: ESPECTADOR ---
+                menuContainer.innerHTML = `
+        <a href="#" id="btnBolitaEspectador" class="user-avatar-btn" style="border-color: #999;">
+            <div class="avatar-text" style="color: #666;"><i class="fa fa-user-secret"></i></div>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right dropdown-menu-user" id="menuDesplegableEspectador">
+            <li>
+                <div class="user-info-header">
+                    <span class="user-role-badge" style="color: #666;">Modo Invitado</span>
+                    <div class="user-email-text">Visualización Limitada</div>
+                </div>
+            </li>
+            <li><a href="ranking.html"><i class="fa fa-eye"></i> Ver Ranking</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a class="text-primary" href="Login/login.html" style="font-weight:bold;"><i class="fa fa-star"></i> Crear Cuenta</a></li>
+            <li><a class="logout" href="#" onclick="logout()"><i class="fa fa-times"></i> Salir</a></li>
+        </ul>
+        `;
+
+                // Agregar toggle al botón de espectador
+                const btnEspectador = document.getElementById('btnBolitaEspectador');
+                if (btnEspectador) {
+                    btnEspectador.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('userMenuLi').classList.toggle('open');
+                    });
+                }
+
+            } else {
+                // --- CASO 3: VISITANTE ---
+                menuContainer.innerHTML = `
+        <a href="Login/login.html" class="btn btn-primary">
+            <i class="fa fa-user"></i> Acceder
+        </a>
+        `;
+            }
+
+            // Event listener global para cerrar menú al hacer click fuera (solo se agrega una vez)
+            document.addEventListener('click', (e) => {
+                const userMenuLi = document.getElementById('userMenuLi');
+                if (userMenuLi && userMenuLi.classList.contains('open') && !userMenuLi.contains(e.target)) {
+                    userMenuLi.classList.remove('open');
+                }
             });
-            event.currentTarget.classList.add('active');
+        });
+
+        // 3. FUNCIÓN DE SALIDA
+        async function logout() {
+            await client.auth.signOut();
+            localStorage.removeItem('modo_espectador');
+            window.location.reload(); // Recargar para mostrar botón de acceder
         }
-
-        // Update active nav on scroll
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('.doc-section');
-            const navItems = document.querySelectorAll('.doc-nav-item');
-            
-            let currentSection = '';
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 150;
-                if (window.pageYOffset >= sectionTop) {
-                    currentSection = section.getAttribute('id');
-                }
-            });
-            
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('onclick').includes(currentSection)) {
-                    item.classList.add('active');
-                }
-            });
-        });
-
-        // Initialize first section as active
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.doc-nav-item').classList.add('active');
-        });
     </script>
 </body>
+
+
+<!-- index-kenburns13:00  -->
+
 </html>

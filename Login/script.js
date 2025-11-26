@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Usamos supabaseClient
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
-            window.location.href = '../index-kenburns.html';
+            window.location.href = '../index.html';
         }
     }
 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginBtn.style.color = '#fff';
                 
                 setTimeout(() => {
-                    window.location.href = '../ranking.html';
+                    window.location.href = '../index.html';
                 }, 1000);
 
             } catch (error) {
